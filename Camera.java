@@ -80,7 +80,7 @@ class Camera {
         calcZ = gs.vDist * (float)cos(phi);
         
         // Setting the Eye.
-        eye = new Vector(calcX, calcY, calcZ);
+        eye = new Vector(calcX, calcY, calcZ).add(center);
     }
 
     /**
