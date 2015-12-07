@@ -88,7 +88,17 @@ class Camera {
      * The camera should focus on the robot.
      */
     private void setHelicopterMode(GlobalState gs, Robot focus) {
-        // code goes here ...
+        double calcX, calcY, calcZ, r;
+        
+        calcX = focus.position.x;
+        calcY = focus.position.y;
+        center = focus.position;
+        up = Vector.Z;
+        calcZ = 20;
+        r = Math.hypot(calcX, calcY);
+        calcX = r * cos(gs.theta);
+        calcY = r * sin(gs.theta);
+        eye = new Vector(calcX, calcY, calcZ).add(center);
     }
 
     /**
@@ -115,4 +125,10 @@ class Camera {
         // code goes here ...
     }
 
+    private void robotSwitch(GlobalState gs, float t) {
+        t = t/10;
+        if( t > 3) {
+            
+        }
+    }
 }
