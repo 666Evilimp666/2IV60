@@ -34,20 +34,25 @@ class RaceTrack {
      */
     public void draw(GL2 gl, GLU glu, GLUT glut) {
         if (null == controlPoints) {
-            // draw the test track
-            
+            gl.glBegin(gl.GL_QUAD_STRIP);
+            gl.glColor3d(0, 0, 0);
+            for(double t = 0.0; t <= 1.0; t+=0.0001) {
+                // Draw inner point of the track.
+                // With an normal pointing up (Z)
+                Vector v = this.getPoint(t);
+                gl.glNormal3d(Vector.Z.x, Vector.Z.y, Vector.Z.z);
+                gl.glVertex3d(v.x, v.y, v.z);
+
+                // Draw outer point of the track.
+                // With an normal pointing up (Z)
+                Vector w = new Vector(10 * Math.cos(2 * Math.PI * t + trackWidth), 14 * Math.sin(2 * Math.PI * t + trackWidth), 1);
+                gl.glNormal3d(Vector.Z.x, Vector.Z.y, Vector.Z.z);
+                gl.glVertex3d(w.x, w.y, w.z);
+            }
+            gl.glEnd();
         } else {
             // draw the spline track
         }
-        
-        gl.glBegin(gl.GL_QUAD_STRIP);
-        for(double t = 0.0; t <= 1.0; t+=0.00001) {
-            Vector v = this.getPoint(t);
-            gl.glVertex3d(v.x, v.y, v.z);
-            Vector w = new Vector(10 * Math.cos(2 * Math.PI * t + trackWidth), 14 * Math.sin(2 * Math.PI * t + trackWidth), 1);
-            gl.glVertex3d(w.x, w.y, w.z);
-        }
-        gl.glEnd();
     }
     
     /**
