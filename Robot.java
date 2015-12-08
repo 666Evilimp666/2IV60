@@ -12,6 +12,8 @@ import javax.media.opengl.glu.GLU;
 * Represents a Robot, to be implemented according to the Assignments.
 */
 class Robot {
+    // Progress along the track
+    public float progress = 0f;
     
     /** The position of the robot. */
     public Vector position = new Vector(1, 1, 0);
@@ -44,26 +46,26 @@ class Robot {
     // HeadWidth (Default X axis)
     private double headWidth = 0.2;
     // HeadDepth (Default Y axis)
-    private double headDepth = 0.1;
+    private double headDepth = 5;
     
     // LegHeight (Default Z axis)
     private double legHeight = 1;
     // LegWidth (Default X axis)
-    private double legWidth = 0.2;
+    private double legWidth = 0.1;
     // LegDepth (Default Y axis)
     private double legDepth = 0.2;
     
     // ArmHeight (Default Z axis)
     private double armHeight = 0.8;
     // ArmWidth (Default X axis)
-    private double armWidth = 0.2;
+    private double armWidth = 0.1;
     // ArmDepth (default Y axis)
     private double armDepth = 0.2;
     
     // TorsoHeight (Default Z axis)
     private double torsoHeight = 1.3;
     // TorsoWidth (Default x axis)
-    private double torsoWidth = 0.6;
+    private double torsoWidth = 0.3;
     // TorsoDepth (Default Y axis)
     private double torsoDepth = 0.5;
     
@@ -112,6 +114,15 @@ class Robot {
         gl.glMaterialf(GL_FRONT, GL_SHININESS, this.material.shininess);
         
         
+        gl.glPushMatrix();
+        
+        gl.glTranslated(this.position.x(), this.position.y(), this.position.z());
+        
+        
+        double angle = Math.acos(this.direction.dot(new Vector(0,1,0))/(this.direction.subtract(this.position).length())) * 180/Math.PI;
+        //gl.glRotated(angle, 0f, 0f, 1f);
+        
+        
         // Draw torso
         drawTorso(stickFigure);
         
@@ -129,6 +140,8 @@ class Robot {
         
         // Draw right leg
         drawLeg(Robot.LimbOrientation.RIGHT, stickFigure,  tAnim);
+                
+        gl.glPopMatrix();
     }
     
     /**
@@ -138,7 +151,6 @@ class Robot {
      */
     private void drawHead(boolean stickFigure, float tAnim) {
         gl.glPushMatrix();
-        gl.glTranslated(this.position.x(), this.position.y(), this.position.z());
         // Done in 2 translations incase we want headanimations lateron
         gl.glTranslated(this.headOffset.x(), this.headOffset.y(), this.headOffset.z());
         if(stickFigure) {
@@ -168,8 +180,6 @@ class Robot {
      */
     private void drawTorso(boolean stickFigure) {
         gl.glPushMatrix();
-        gl.glTranslated(this.position.x(), this.position.y(), this.position.z());
-        
         if(stickFigure){
             // Some straight line representing torso height.
             gl.glColor3d(0, 0, 0);
@@ -211,8 +221,6 @@ class Robot {
     private void drawArm(Robot.LimbOrientation orientation, boolean stickFigure, float tAnim) {
         gl.glPushMatrix();
         
-        gl.glTranslated(this.position.x(), this.position.y(), this.position.z());
-        
         // Mirror the arm so we only need code for drawing one arm.
         if(orientation == Robot.LimbOrientation.LEFT)
             gl.glScaled(-1, 1, 1);
@@ -253,8 +261,6 @@ class Robot {
      */
     private void drawLeg(Robot.LimbOrientation orientation, boolean stickFigure, float tAnim) {
         gl.glPushMatrix();
-        
-        gl.glTranslated(this.position.x(), this.position.y(), this.position.z());
         
         // Mirror the arm so we only need code for drawing one arm.
         if(orientation == Robot.LimbOrientation.LEFT)
