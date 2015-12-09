@@ -46,7 +46,7 @@ class Robot {
     // HeadWidth (Default X axis)
     private double headWidth = 0.2;
     // HeadDepth (Default Y axis)
-    private double headDepth = 5;
+    private double headDepth = 0.2;
     
     // LegHeight (Default Z axis)
     private double legHeight = 1;
@@ -116,11 +116,27 @@ class Robot {
         
         gl.glPushMatrix();
         
+        // Translate the robot to the correct coordinates.
         gl.glTranslated(this.position.x(), this.position.y(), this.position.z());
         
+        // cos alpha = (A.B)/(|A|*|B|)
+        // A = Vector.Y, B=this.direction.normalized()
+        // since A and B in this case are both unit length we dont need to do that part.
+        Vector dir = this.direction.normalized();
+        double dotProduct = Vector.Y.dot(dir);
+        double acos = Math.acos(dotProduct);
         
-        double angle = Math.acos(this.direction.dot(new Vector(0,1,0))/(this.direction.subtract(this.position).length())) * 180/Math.PI;
-        //gl.glRotated(angle, 0f, 0f, 1f);
+        // acos returns an angle in radians and we need degrees for glRotate.
+        double angle = Math.toDegrees(acos);
+        
+        // If the crossproduct is negative then we have a rotation the other way around.
+        // and thus need to flip the angle to the negative side.
+        Vector crossProduct = Vector.Y.cross(dir);
+        if(crossProduct.z() < 0)
+            angle = angle*-1;
+        
+        // Apply the rotation
+        gl.glRotated(angle, 0f, 0f, 1f);
         
         
         // Draw torso
