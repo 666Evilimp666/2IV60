@@ -276,19 +276,17 @@ public class RobotRace extends Base {
         if (gs.showAxes)
             drawAxisFrame();
         
-        // Starting position of the first robot
-        double robX = -3.75;
-        
         // loop through all robots to draw them.
-        for(Robot r : robots)
+        for(int i = 0; i < robots.length; i++)
         {
+            robots[i].progress += 0.0005*Math.random();
+            
             // setup the location and direction of the robot
-            r.position = new Vector(robX += 1.5, 0, 0);
-            //r.position = raceTracks[gs.trackNr].getLanePoint(0, 0);
-            r.direction = raceTracks[gs.trackNr].getLaneTangent(0, 0);
-        
+            robots[i].position = raceTracks[gs.trackNr].getLanePoint(i, robots[i].progress);
+            robots[i].direction = raceTracks[gs.trackNr].getLaneTangent(i, robots[i].progress);
+            
             // draw the robot
-            r.draw(gl, glu, glut, gs.showStick, gs.tAnim);
+            robots[i].draw(gl, glu, glut, gs.showStick, gs.tAnim);
         }
         
         // Draw the race track.
@@ -296,10 +294,6 @@ public class RobotRace extends Base {
         
         // Draw the terrain.
         terrain.draw(gl, glu, glut);
-        
-        // Show error if there is one
-        if(gl.glGetError() != 0)
-            System.out.println(gl.glGetError());
     }
     
     /**

@@ -34,22 +34,65 @@ class RaceTrack {
      */
     public void draw(GL2 gl, GLU glu, GLUT glut) {
         if (null == controlPoints) {
+            /**
+             * Drawing the top of the racetrack
+             */
             gl.glBegin(gl.GL_QUAD_STRIP);
-            gl.glColor3d(0, 0, 0);
             for(double t = 0.0; t <= 1.0; t+=0.0001) {
                 // Draw inner point of the track.
                 // With an normal pointing up (Z)
                 Vector v = this.getPoint(t);
                 gl.glNormal3d(Vector.Z.x, Vector.Z.y, Vector.Z.z);
-                gl.glVertex3d(v.x, v.y, v.z);
+                gl.glVertex3d(v.x, v.y, 1);
 
                 // Draw outer point of the track.
+                Vector w = new Vector(v.x, v.y, v.z);
+                double scalar = (w.length()+trackWidth)/w.length();
+                w = w.scale(scalar);
+                
                 // With an normal pointing up (Z)
-                Vector w = new Vector(10 * Math.cos(2 * Math.PI * t + trackWidth), 14 * Math.sin(2 * Math.PI * t + trackWidth), 1);
                 gl.glNormal3d(Vector.Z.x, Vector.Z.y, Vector.Z.z);
-                gl.glVertex3d(w.x, w.y, w.z);
+                gl.glVertex3d(w.x, w.y, 1);
             }
             gl.glEnd();
+            
+            /**
+             * Drawing the inner side of the racetrack
+             */
+            gl.glBegin(gl.GL_QUAD_STRIP);
+            for(double t = 0.0; t <= 1.0; t+=0.0001) {
+                // Top point of the racetrack
+                Vector v = this.getPoint(t);
+                Vector n = (new Vector(v.x*-1, v.y*-1, 0)).normalized();
+                
+                gl.glNormal3d(n.x, n.y, n.z);
+                gl.glVertex3d(v.x, v.y, 1);
+                
+                gl.glNormal3d(n.x, n.y, n.z);
+                gl.glVertex3d(v.x, v.y, -1);
+            }
+            gl.glEnd();
+            
+            
+            /**
+             * Drawing the outer side of the racetrack
+            */
+            gl.glBegin(gl.GL_QUAD_STRIP);
+            for(double t = 0.0; t <= 1.0; t+=0.0001) {
+                // Top point of the racetrack
+                Vector v = this.getPoint(t);
+                double scalar = (v.length()+trackWidth)/v.length();
+                v = v.scale(scalar);
+                
+                Vector n = (new Vector(v.x, v.y, 0)).normalized();
+                gl.glNormal3d(n.x, n.y, n.z);
+                gl.glVertex3d(v.x, v.y, 1);
+                
+                gl.glNormal3d(n.x, n.y, n.z);
+                gl.glVertex3d(v.x, v.y, -1);
+            }
+            gl.glEnd();
+            
         } else {
             // draw the spline track
         }
@@ -61,7 +104,11 @@ class RaceTrack {
      */
     public Vector getLanePoint(int lane, double t) {
         if (null == controlPoints) {
-            return Vector.O; // <- code goes here
+            Vector v = this.getPoint(t);
+            double scalar = (v.length()+((laneWidth*lane)+laneWidth/2))/v.length();
+            v = v.scale(scalar);
+            
+            return new Vector(v.x, v.y, 1);
         } else {
             return Vector.O; // <- code goes here
         }
@@ -84,7 +131,7 @@ class RaceTrack {
      */
     private Vector getPoint(double t) {
         //we create and immediately return a vector for the test track via the given formula
-        return new Vector(10 * Math.cos(2 * Math.PI * t), 14 * Math.sin(2 * Math.PI * t), 1);
+        return new Vector(10 * Math.cos(2 * Math.PI * t), 14 * Math.sin(2 * Math.PI * t), 0);
     }
 
     /**
