@@ -79,6 +79,8 @@ public class RobotRace extends Base {
     /** Instance of the terrain. */
     private final Terrain terrain;
     
+    Robot focus;
+    boolean update;
     /**
      * Constructs this robot race by initializing robots,
      * camera, track, and terrain.
@@ -138,6 +140,10 @@ public class RobotRace extends Base {
         
         // Initialize the terrain
         terrain = new Terrain();
+        
+        //starting robot to focus on
+         focus = robots[0]; 
+         update = true;
     }
     
     /**
@@ -174,7 +180,17 @@ public class RobotRace extends Base {
      */
     @Override
     public void setView() {
-        camera.update(gs, robots[0]);
+        int time = (int) gs.tAnim;
+        if(time%5 == 0 && update) {
+           focus = robotSwitch(focus);
+           update = false;
+        }
+        if(time%5 != 0) {
+            update = true;
+        }
+        
+        
+        camera.update(gs, focus);
         
         // Select part of window.
         gl.glViewport(0, 0, gs.w, gs.h);
@@ -359,6 +375,28 @@ public class RobotRace extends Base {
         glut.glutSolidSphere(0.1f, 100, 100);
     }
  
+    /**
+     * Picks a new robot to focus on, depending on the robots positions and last focus
+     * @param current the current robot being focused on
+     * @return  the new robot to be focused on
+     */
+    private Robot robotSwitch(Robot current) {
+        Robot result;
+        if(robots[0] != current && robots[0].progress >= robots[1].progress && robots[0].progress >= robots[2].progress && 
+                robots[0].progress >= robots[3].progress) {
+            result = robots[0];
+        }
+        else if(robots[1] != current && robots[1].progress >= robots[2].progress &&  robots[1].progress >= robots[3].progress) {
+            result = robots[1];
+        }
+        else if(robots[2] != current && robots[2].progress >= robots[3].progress) {
+            result = robots[2];
+        }
+        else {
+            result = robots[3];
+        }
+        return result;
+    }
     /**
      * Main program execution body, delegates to an instance of
      * the RobotRace implementation.

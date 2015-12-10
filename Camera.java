@@ -15,7 +15,7 @@ class Camera {
 
     /** The up vector. */
     public Vector up = Vector.Z;
-
+    int last = 0;
     /**
      * Updates the camera viewpoint and direction based on the
      * selected camera mode.
@@ -99,6 +99,7 @@ class Camera {
         calcX = r * cos(gs.theta);
         calcY = r * sin(gs.theta);
         eye = new Vector(calcX, calcY, calcZ).add(center);
+       
     }
 
     /**
@@ -106,7 +107,14 @@ class Camera {
      * The camera should focus on the robot.
      */
     private void setMotorCycleMode(GlobalState gs, Robot focus) {
-        // code goes here ...
+        Vector direc = focus.direction.cross(Vector.Z);
+        direc = direc.normalized();
+        center = focus.position;
+        up = Vector.Z;
+        eye = direc.add(center);
+        double scalar = eye.length() + center.length();
+        eye = (eye.normalized()).scale(scalar);
+        //need to get standard length
     }
 
     /**
@@ -114,7 +122,12 @@ class Camera {
      * The camera should view from the perspective of the robot.
      */
     private void setFirstPersonMode(GlobalState gs, Robot focus) {
-        // code goes here ...
+        Vector direc = focus.direction;
+        up = Vector.Z;
+        center = focus.direction.normalized();
+        eye = (direc.normalized()).scale(focus.position.length());
+        eye.z = 2.3;
+        //still fucky
     }
     
     /**
@@ -122,13 +135,20 @@ class Camera {
      * The above modes are alternated.
      */
     private void setAutoMode(GlobalState gs, Robot focus) {
-        // code goes here ...
+        double choice = Math.random();
+        if(choice < 0.33 && last != 1) {
+            setHelicopterMode(gs, focus);
+            last = 1;
+        }
+        else if(0.33 < choice && choice < 0.66 && last != 2) {
+            setMotorCycleMode(gs, focus);
+            last = 2;
+        }
+        else {
+            setFirstPersonMode(gs, focus);
+            last = 3;
+        }
+        //after this make sure the modes don't change for a few seconds unless specified by user
     }
 
-    private void robotSwitch(GlobalState gs, float t) {
-        t = t/10;
-        if( t > 3) {
-            
-        }
-    }
 }
