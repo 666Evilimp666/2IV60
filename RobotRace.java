@@ -117,10 +117,10 @@ public class RobotRace extends Base {
         
         // O-track
         raceTracks[1] = new RaceTrack(new Vector[] {
-            /* add control points like:
-            new Vector(10, 0, 1), new Vector(10, 5, 1), new Vector(5, 10, 1),
-            new Vector(..., ..., ...), ...
-            */
+            new Vector(5, 0, 0),
+            new Vector(10, 5, 0.5),
+            new Vector(5, 10, 1),
+            new Vector(0, 5, 1.5)
         });
         
         // L-track
@@ -188,7 +188,6 @@ public class RobotRace extends Base {
         if(time%5 != 0) {
             update = true;
         }
-        
         
         camera.update(gs, focus);
         
@@ -295,7 +294,14 @@ public class RobotRace extends Base {
         // loop through all robots to draw them.
         for(int i = 0; i < robots.length; i++)
         {
-            robots[i].progress += 0.0005*Math.random();
+            // The stepsize of the robot
+            double incr = 0.0005*Math.random();
+            
+            // Avoiding looping the robot around the track. (doesn't look real otherwise on the L and C track)
+            if(robots[i].progress + incr <= 1)
+                robots[i].progress += incr;
+            else
+                robots[i].progress = 1;
             
             // setup the location and direction of the robot
             robots[i].position = raceTracks[gs.trackNr].getLanePoint(i, robots[i].progress);

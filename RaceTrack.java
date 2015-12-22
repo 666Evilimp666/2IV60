@@ -13,8 +13,12 @@ class RaceTrack {
     private final static float laneWidth = 1.22f;
     private final static float trackWidth = 4 * laneWidth;
 
+    // @TODO: 4N points? we are working with cubic bezier (function name) so why would it be 3N?
     /** Array with 3N control points, where N is the number of segments. */
     private Vector[] controlPoints = null;
+    
+    /* The length of the bezier segments based on control points given. */
+    private double[] lengthDistrubion = null;
     
     /**
      * Constructor for the default track.
@@ -27,6 +31,16 @@ class RaceTrack {
      */
     public RaceTrack(Vector[] controlPoints) {
         this.controlPoints = controlPoints;
+        
+        // Since we are working with cubic bezier splines all segments are based on 4 control points.
+        int segments = controlPoints.length % 4;
+        double[] lengths = {};
+        
+        // Loop through all segments and calculate their length
+        for(int i = 0; i < segments; i++) {
+            double len = 0;
+            lengths[i] = len; 
+        }
     }
 
     /**
@@ -94,7 +108,13 @@ class RaceTrack {
             gl.glEnd();
             
         } else {
-            // draw the spline track
+            gl.glBegin(GL2.GL_QUAD_STRIP);
+            for(double t = 0.0; t <= 1.0; t+=0.01) {
+                Vector v = this.getCubicBezierPoint(t, this.controlPoints[0], this.controlPoints[1], this.controlPoints[2], this.controlPoints[3]);
+                gl.glVertex3d(v.x(), v.y(), v.z());
+                gl.glVertex3d(v.x(), v.y(), v.z()+0.5);
+            }
+            gl.glEnd();
         }
     }
     
@@ -110,6 +130,8 @@ class RaceTrack {
             
             return new Vector(v.x, v.y, 1);
         } else {
+            
+            
             return Vector.O; // <- code goes here
         }
     }
@@ -147,7 +169,29 @@ class RaceTrack {
      */
     private Vector getCubicBezierPoint(double t, Vector P0, Vector P1,
                                                  Vector P2, Vector P3) {
-        return Vector.O; // <- code goes here
+        // Formula for quadratic bezierspline:
+        // B(t) = (1-t)^3P0 + 3t(1-t)^2P1 + 3t^2(1-t)P2 + t^3P3 with t in [0,1]
+        double calcX, calcY, calcZ;
+        
+        // Using the formula above to calculate X.
+        calcX =     Math.pow(1-t,3)*P0.x()+
+                    3*t*Math.pow(1-t,2)*P1.x() +
+                    Math.pow(3*t,2)*(1-t)*P2.x() +
+                    Math.pow(t,3)*P3.x();
+        
+        // Using the formula above to calculate Y.
+        calcY =     Math.pow(1-t,3)*P0.y() +
+                    3*t*Math.pow(1-t,2)*P1.y() +
+                    Math.pow(3*t,2)*(1-t)*P2.y() +
+                    Math.pow(t,3)*P3.y();
+        
+        // Using the formula above to calculate Y.
+        calcZ =     Math.pow(1-t,3)*P0.z()+
+                    3*t*Math.pow(1-t,2)*P1.z() +
+                    Math.pow(3*t,2)*(1-t)*P2.z() +
+                    Math.pow(t,3)*P3.z();
+        
+        return new Vector(calcX, calcY, calcZ);
     }
     
     /**
@@ -156,6 +200,31 @@ class RaceTrack {
      */
     private Vector getCubicBezierTangent(double t, Vector P0, Vector P1,
                                                    Vector P2, Vector P3) {
-        return Vector.O; // <- code goes here
+        // Formula for quadratic bezierspline:
+        // B(t) = (1-t)^3P0 + 3t(1-t)^2P1 + 3t^2(1-t)P2 + t^3P3 with t in [0,1]
+        
+        // Derivative is:
+        // D(t) = -3*P0*(1 - t)^2 + P1*(3*(1 - t)^2 - 6*(1 - t)*t) + P2*(6*(1 - t)*t - 3*t^2) + 3*P3*t^2
+        double calcX, calcY, calcZ;
+        
+        // Using the formula above to calculate X.
+        calcX =     -3*Math.pow(1-t,2)*P0.x() +
+                    (3*Math.pow(1 - t, 2) - 6*(1 - t)*t)*P1.x()+
+                    (6*(1 - t)*t - Math.pow(3*t,2))*P2.x()+
+                    3*Math.pow(t,2)*P3.x();
+        
+        // Using the formula above to calculate Y.
+        calcY =     -3*Math.pow(1-t,2)*P0.y() +
+                    (3*Math.pow(1 - t, 2) - 6*(1 - t)*t)*P1.y()+
+                    (6*(1 - t)*t - Math.pow(3*t,2))*P2.y()+
+                    3*Math.pow(t,2)*P3.y();
+        
+        // Using the formula above to calculate Z.
+        calcZ =     -3*Math.pow(1-t,2)*P0.z() +
+                    (3*Math.pow(1 - t, 2) - 6*(1 - t)*t)*P1.z()+
+                    (6*(1 - t)*t - Math.pow(3*t,2))*P2.z()+
+                    3*Math.pow(t,2)*P3.z();
+        
+        return new Vector(calcX, calcY, calcZ);
     }
 }
