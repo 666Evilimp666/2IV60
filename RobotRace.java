@@ -117,20 +117,71 @@ public class RobotRace extends Base {
         
         // O-track
         raceTracks[1] = new RaceTrack(new Vector[] {
-            new Vector(5, 0, 0),
-            new Vector(10, 5, 0.5),
+            // First part
+            new Vector(0, 10, 1),
             new Vector(5, 10, 1),
-            new Vector(0, 5, 1.5)
+            new Vector(10, 5, 1),
+            new Vector(10, 0, 1),
+            
+            // Second part
+            new Vector(10, 0, 1),
+            new Vector(10, -5, 1),
+            new Vector(5, -10, 1),
+            new Vector(0, -10, 1),
+            
+            // Third part
+            new Vector(0, -10, 1),
+            new Vector(-5, -10, 1),
+            new Vector(-10, -5, 1),
+            new Vector(-10, 0, 1),
+            
+            // Fourth part
+            new Vector(-10, 0, 1),
+            new Vector(-10, 5, 1),
+            new Vector(-5, 10, 1),
+            new Vector(0, 10, 1)
         });
         
         // L-track
         raceTracks[2] = new RaceTrack(new Vector[] { 
-            /* add control points */
+            // First part
+            new Vector(-15, 15, 1),
+            new Vector(-15, 5, 1),
+            new Vector(-15,-5, 1),
+            new Vector(-15, -10, 1),
+            
+            // Second part
+            new Vector(-15, -10, 1),
+            new Vector(-15, -15, 1),
+            new Vector(-15, -15, 1),
+            new Vector(-10, -15, 1),
+            
+            // Third part
+            new Vector(-10, -15, 1),
+            new Vector(-5, -15, 1),
+            new Vector(5, -15, 1),
+            new Vector(15, -15, 1)
         });
         
         // C-track
         raceTracks[3] = new RaceTrack(new Vector[] { 
-            /* add control points */
+            // First part
+            new Vector(0, 10, 1),
+            new Vector(5, 10, 1),
+            new Vector(10, 5, 1),
+            new Vector(10, 0, 1),
+            
+            // Second part
+            new Vector(10, 0, 1),
+            new Vector(10, -5, 1),
+            new Vector(5, -10, 1),
+            new Vector(0, -10, 1),
+            
+            // Third part
+            new Vector(0, -10, 1),
+            new Vector(-5, -10, 1),
+            new Vector(-10, -5, 1),
+            new Vector(-10, 0, 1)
         });
         
         // Custom track
