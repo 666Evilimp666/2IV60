@@ -373,7 +373,7 @@ class RaceTrack {
                     3*(1-t)*Math.pow(t,2)*P2.y() +
                     Math.pow(t,3)*P3.y();
         
-        // Using the formula above to calculate Y.
+        // Using the formula above to calculate Z.
         calcZ =     Math.pow(1-t,3)*P0.z() +
                     3*t*Math.pow(1-t,2)*P1.z() +
                     3*(1-t)*Math.pow(t,2)*P2.z() +
@@ -392,26 +392,23 @@ class RaceTrack {
         // B(t) = (1-t)^3P0 + 3t(1-t)^2P1 + 3t^2(1-t)P2 + t^3P3 with t in [0,1]
         
         // Derivative is:
-        // D(t) = -3*P0*(1 - t)^2 + P1*(3*(1 - t)^2 - 6*(1 - t)*t) + P2*(6*(1 - t)*t - 3*t^2) + 3*P3*t^2
+        // D(t) = P0 ((6-3 t) t-3)+P1 (t (9 t-12)+3)+t (t (3 P3-9 P2)+6 P2)
         double calcX, calcY, calcZ;
         
         // Using the formula above to calculate X.
-        calcX =     -3*Math.pow(1-t,2)*P0.x() +
-                    (3*Math.pow(1 - t, 2) - 6*(1 - t)*t)*P1.x()+
-                    (6*(1 - t)*t - Math.pow(3*t,2))*P2.x()+
-                    3*Math.pow(t,2)*P3.x();
+        calcX =     P0.x() * ((6-3*t) * t-3) +
+                    P1.x() * (t*(9*t-12)+3) +
+                    t * (t * (3*P3.x()-9*P2.x())+6*P2.x());
         
         // Using the formula above to calculate Y.
-        calcY =     -3*Math.pow(1-t,2)*P0.y() +
-                    (3*Math.pow(1 - t, 2) - 6*(1 - t)*t)*P1.y()+
-                    (6*(1 - t)*t - Math.pow(3*t,2))*P2.y()+
-                    3*Math.pow(t,2)*P3.y();
+        calcY =     P0.y() * ((6-3*t) * t-3) +
+                    P1.y() * (t*(9*t-12)+3) +
+                    t * (t * (3*P3.y()-9*P2.y())+6*P2.y());
         
-        // Using the formula above to calculate Y.
-        calcZ =     -3*Math.pow(1-t,2)*P0.y() +
-                    (3*Math.pow(1 - t, 2) - 6*(1 - t)*t)*P1.y()+
-                    (6*(1 - t)*t - Math.pow(3*t,2))*P2.y()+
-                    3*Math.pow(t,2)*P3.y();
+        // Using the formula above to calculate Z.
+        calcZ =     P0.z() * ((6-3*t) * t-3) +
+                    P1.z() * (t*(9*t-12)+3) +
+                    t * (t * (3*P3.z()-9*P2.z())+6*P2.z());
         
         return new Vector(calcX, calcY, calcZ);
     }
