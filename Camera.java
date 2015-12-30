@@ -16,6 +16,8 @@ class Camera {
     /** The up vector. */
     public Vector up = Vector.Z;
     int last = 0;
+    boolean rndm = false;
+    boolean update = false;
     /**
      * Updates the camera viewpoint and direction based on the
      * selected camera mode.
@@ -23,25 +25,28 @@ class Camera {
     public void update(GlobalState gs, Robot focus) {
         // Change center to given.
         center = gs.cnt;
-        
         switch (gs.camMode) {
             // Helicopter mode
             case 1:
+                rndm = false;
                 setHelicopterMode(gs, focus);
                 break;
                 
             // Motor cycle mode    
             case 2:
+                rndm = false;
                 setMotorCycleMode(gs, focus);
                 break;
                 
             // First person mode    
             case 3:
+                rndm = false;
                 setFirstPersonMode(gs, focus);
                 break;
                 
             // Auto mode    
             case 4:
+                rndm = true;
                 setAutoMode(gs, focus);
                 break;
                 
@@ -122,12 +127,11 @@ class Camera {
      * The camera should view from the perspective of the robot.
      */
     private void setFirstPersonMode(GlobalState gs, Robot focus) {
-        Vector direc = focus.direction;
         up = Vector.Z;
-        center = focus.direction.normalized();
-        eye = (direc.normalized()).scale(focus.position.length());
-        eye.z = 2.3;
-        //still fucky
+        center = focus.direction;
+        eye = focus.position.add(Vector.O);
+        eye.z = eye.z + 2.3;
+        //camera is set up properly, but maybe fix the zoom? You need to manually zoom out for best results
     }
     
     /**
@@ -135,20 +139,35 @@ class Camera {
      * The above modes are alternated.
      */
     private void setAutoMode(GlobalState gs, Robot focus) {
-        double choice = Math.random();
-        if(choice < 0.33 && last != 1) {
-            setHelicopterMode(gs, focus);
-            last = 1;
-        }
-        else if(0.33 < choice && choice < 0.66 && last != 2) {
-            setMotorCycleMode(gs, focus);
-            last = 2;
-        }
-        else {
-            setFirstPersonMode(gs, focus);
-            last = 3;
-        }
-        //after this make sure the modes don't change for a few seconds unless specified by user
+        if(rndm) {
+            update = false;
+            double choice = Math.random();
+            if(choice < 0.33 && last != 1) {
+                setHelicopterMode(gs, focus);
+                last = 1;
+            }
+            else if(0.33 < choice && choice < 0.66 && last != 2) {
+                setMotorCycleMode(gs, focus);
+                last = 2;
+            }
+            else {
+                setFirstPersonMode(gs, focus);
+                last = 3;
+         }
+        
     }
-
+        else {
+            switch (last) {
+                case 1:
+                    setHelicopterMode(gs, focus);
+                    break;
+                case 2:
+                    setMotorCycleMode(gs, focus);
+                    break;
+                case 3:
+                    setFirstPersonMode(gs, focus);
+                    break;
+            }
+        }
+    }
 }
