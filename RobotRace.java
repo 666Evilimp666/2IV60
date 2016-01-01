@@ -2,13 +2,14 @@ package robotrace;
 
 import com.jogamp.opengl.math.Quaternion;
 import static java.lang.Math.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import static javax.media.opengl.GL.*;
 import static javax.media.opengl.GL2.*;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_DIFFUSE;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_LIGHT0;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_LIGHTING;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_POSITION;
-import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SHININESS;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SMOOTH;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SPECULAR;
 
@@ -367,6 +368,17 @@ public class RobotRace extends Base {
         
         // Draw the terrain.
         terrain.draw(gl, glu, glut);
+        
+        // Format of time being displayed
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        
+        // Get the current time.
+        Calendar cal = Calendar.getInstance();
+        String time = sdf.format(cal.getTime());
+        
+        // Draw the time.
+        gl.glColor4d(1, 1, 1, 1);
+        this.drawText(time, 10, 10);
     }
     
     /**
@@ -462,4 +474,36 @@ public class RobotRace extends Base {
         RobotRace robotRace = new RobotRace();
         robotRace.run();
     } 
+    
+    /**
+     * Draws text in the window, x=0,y=0 being the bottom left corner.
+     * @param text The text that will be drawn.
+     * @param x x-coordinate for the text starting position.
+     * @param y y-coordinate for the text starting position.
+     */
+    private void drawText(String text, int x, int y){
+        // Reset to identity matrix
+        gl.glMatrixMode(GL_PROJECTION);
+        gl.glLoadIdentity(); 
+        
+        // orthographic perspective
+        gl.glOrtho(0, 800, 0, 600, -5, 5);
+        
+        // Go back to modelview and identity matrix.
+        gl.glMatrixMode(GL_MODELVIEW);
+        gl.glLoadIdentity();
+        
+        // push current state
+        gl.glPushMatrix();
+        
+        // define the raster position (where the text starts in the window) in 2d.
+        // 0,0 is the bottom left corner.
+        gl.glRasterPos2i(x, y);
+        
+        // Draw the text in "BITMAP_9_BY_15" font.
+        glut.glutBitmapString(glut.BITMAP_9_BY_15, text);
+        
+        // Pop away the ortho perspective
+        gl.glPopMatrix(); 
+   }
 }
