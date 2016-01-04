@@ -1,12 +1,16 @@
 package robotrace;
 
 import com.jogamp.opengl.util.gl2.GLUT;
+import com.jogamp.opengl.util.texture.Texture;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
+import java.awt.Color;
 
 /**
  * Implementation of the terrain.
  */
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 class Terrain {
     int maxX = 20;
     int maxY = 20;
@@ -23,18 +27,51 @@ class Terrain {
      * Draws the terrain.
      */
     public void draw(GL2 gl, GLU glu, GLUT glut) {
-        //try mesh
-        gl.glBegin(gl.GL_QUAD_STRIP);
+        //color array for the 1d texture
+        Color[] colors = {Color.BLUE, Color.YELLOW, Color.GREEN};
+        //bind the int returned to the 1d texture
+        gl.glBindTexture(gl.GL_TEXTURE_1D, create1DTexture(gl, colors));
+        //enable and set required parameters
+        gl.glEnable(gl.GL_TEXTURE_1D);
+        gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE);
+        //here we start to draw the terrain
+        gl.glBegin(gl.GL_TRIANGLE_STRIP);
         for(int x = minX; x <= maxX; x++) {
-            for(int y = minY; y <= maxY; y++) {
+            for(float y = minY; y <= maxY; y+=0.5) {
                 //set normals pointing up
-                
                 gl.glNormal3d(Vector.Z.x, Vector.Z.y, Vector.Z.z);
-                //getting the height to make the vertex
-                gl.glVertex3d(x, y, heightAt(x, y));
+                //set texture coordinats and get the verteces
+                float z = heightAt(x, y);
+                float t = 0;
+                if(z < 0) {
+                    t = 0.2f;
+                }
+                else if( z > 0.5) {
+                    t = 0.8f;
+                }
+                else {
+                    t = 0.5f;
+                }
+                gl.glTexCoord1f(t);
+                gl.glVertex3d(x, y, z);
+                z = heightAt((float)(x + 0.5), y);
+                t = 0;
+                if(z < 0) {
+                    t = 0.2f;
+                }
+                else if( z > 0.5) {
+                    t = 0.8f;
+                }
+                else {
+                    t = 0.5f;
+                }
+                gl.glTexCoord1f(t);
+                gl.glVertex3d(x + 0.5, y, z);
             }
         }
         gl.glEnd();
+        //disable 1D textures after we have drawn them
+        gl.glDisable(gl.GL_TEXTURE_1D);
     }
 
     /**
@@ -42,5 +79,33 @@ class Terrain {
      */
     public float heightAt(float x, float y) {
         return (float) (0.6 * Math.cos(0.3 * x + 0.2 * y) + 0.4 * Math.cos(x - 0.5 * y));
+    }
+    
+    /**
+    * Creates a new 1D - texture.
+    * @param gl
+    * @param colors
+    * @return the texture ID for the generated texture.
+    */
+    public int create1DTexture(GL2 gl, Color[] colors){
+    gl.glDisable(gl.GL_TEXTURE_2D);
+    gl.glEnable(gl.GL_TEXTURE_1D);
+    int[] texid = new int[]{-1};
+    gl.glGenTextures(1, texid, 0);
+    ByteBuffer bb = ByteBuffer.allocateDirect(colors.length * 4).order(ByteOrder.nativeOrder());
+    for (Color color : colors) {
+        int pixel = color.getRGB();
+        bb.put((byte) ((pixel >> 16) & 0xFF)); // Red component
+        bb.put((byte) ((pixel >> 8) & 0xFF));  // Green component
+        bb.put((byte) (pixel & 0xFF));         // Blue component
+        bb.put((byte) ((pixel >> 24) & 0xFF)); // Alpha component
+    }
+    bb.flip();
+    gl.glBindTexture(gl.GL_TEXTURE_1D, texid[0]);
+    gl.glTexImage1D(gl.GL_TEXTURE_1D, 0, gl.GL_RGBA8, colors.length, 0, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, bb);
+    gl.glTexParameteri(gl.GL_TEXTURE_1D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+    gl.glTexParameteri(gl.GL_TEXTURE_1D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+    gl.glBindTexture(gl.GL_TEXTURE_1D, 0);
+    return texid[0];
     }
 }
