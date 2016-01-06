@@ -361,7 +361,7 @@ public class RobotRace extends Base {
             
             // setup the location and direction of the robot
             robots[i].position = raceTracks[gs.trackNr].getLanePoint(i, robots[i].progress);
-            robots[i].direction = raceTracks[gs.trackNr].getLaneTangent(i, robots[i].progress);
+            robots[i].direction = raceTracks[gs.trackNr].getLaneTangent(i, robots[i].progress).normalized();
             
             // draw the robot
             robots[i].draw(gl, glu, glut, gs.showStick, gs.tAnim);

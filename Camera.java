@@ -128,9 +128,10 @@ class Camera {
      */
     private void setFirstPersonMode(GlobalState gs, Robot focus) {
         up = Vector.Z;
-        center = focus.direction;
+        center = focus.position.add(focus.direction);
         eye = focus.position.add(Vector.O);
         eye.z = eye.z + 2.3;
+        center.z = eye.z();
         //camera is set up properly, but maybe fix the zoom? You need to manually zoom out for best results
     }
     

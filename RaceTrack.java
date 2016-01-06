@@ -286,7 +286,6 @@ class RaceTrack {
         } else {
             double[] segmentPoint = this.getSegmentPoint(t);
             int segment = (int)segmentPoint[0];
-            
             return this.getCubicBezierTangent(segmentPoint[1], this.controlPoints[(segment*4)], this.controlPoints[(segment*4)+1], this.controlPoints[(segment*4)+2], this.controlPoints[(segment*4)+3]);
         } 
     }
