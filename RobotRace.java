@@ -186,8 +186,8 @@ public class RobotRace extends Base {
         });
         
         // Custom track
-        raceTracks[4] = new RaceTrack(new Vector[] { 
-           /* add control points */
+        raceTracks[4] = new RaceTrack(
+        new Vector[] { 
         });
         
         // Initialize the terrain
@@ -331,7 +331,7 @@ public class RobotRace extends Base {
         float[] vecOut = {0f,0f,0f, 0f};
 
         // Starting point of the light
-        float[] vecIn = {(float)camera.eye.x(), (float)camera.eye.y(), (float)camera.eye.z()};
+        float[] vecIn = {(float)eyeRepos.x(), (float)eyeRepos.y(), (float)eyeRepos.z()};
 
         // Perform the rotation on the vector
         vecOut = q.rotateVector(vecOut, 0, vecIn, 0);
