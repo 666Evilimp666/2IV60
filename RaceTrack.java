@@ -134,56 +134,61 @@ class RaceTrack {
             gl.glEnd();
             
         } else {
-            /**
-             * Drawing Startof the track
-             */
-            gl.glBegin(gl.GL_QUAD_STRIP);
-                Vector startIn = this.controlPoints[0];
-                // Find the normal by taking a single step forward.
-                // Invert it and normalize it.
-                Vector startStep = (this.getCubicBezierPoint(stepSize, this.controlPoints[0], this.controlPoints[1], this.controlPoints[2], this.controlPoints[3])).subtract(startIn);
-                Vector normalStart = startStep.scale(-1).normalized();
-                
-                // Draw the inner 2 points (Up and Down)
-                gl.glVertex3d(startIn.x, startIn.y, -1);
-                gl.glNormal3d(normalStart.x, normalStart.y, normalStart.z);
-                gl.glVertex3d(startIn.x, startIn.y, startIn.z);
+            // The start/end "side" of the track only has to be drawn if the track is not looped.
+            // i.e. the start and end point are different.
+            if(
+                    this.controlPoints[0].x() != this.controlPoints[this.controlPoints.length-1].x() ||
+                    this.controlPoints[0].y() != this.controlPoints[this.controlPoints.length-1].y() ||
+                    this.controlPoints[0].z() != this.controlPoints[this.controlPoints.length-1].z()
+            ) {
+                /**
+                 * Drawing Start of the track
+                 */
+                gl.glBegin(gl.GL_QUAD_STRIP);
+                    Vector startIn = this.controlPoints[0];
+                    // Find the normal by taking a single step forward.
+                    // Invert it and normalize it.
+                    Vector startStep = (this.getCubicBezierPoint(stepSize, this.controlPoints[0], this.controlPoints[1], this.controlPoints[2], this.controlPoints[3])).subtract(startIn).normalized();
+                    Vector normalStart = startStep.scale(-1);
 
-                // Draw outer point of the track.
-                Vector startOut = new Vector(startIn.x, startIn.y, startIn.z);
-                double startScalar = (startOut.length()+trackWidth)/startOut.length();
-                startOut = startOut.scale(startScalar);
-                gl.glVertex3d(startOut.x, startOut.y, -1);
-                gl.glNormal3d(normalStart.x, normalStart.y, normalStart.z);
-                gl.glVertex3d(startOut.x, startOut.y, startOut.z);
-                gl.glNormal3d(normalStart.x, normalStart.y, normalStart.z);
-            gl.glEnd();
-            
-            /**
-             * Drawing Startof the track
-             */
-            gl.glBegin(gl.GL_QUAD_STRIP);
-                Vector endIn = this.controlPoints[controlPoints.length-1];
-                // Find the normal by taking a single step backward.
-                // Invert it and normalize it.
-                Vector endStep = (this.getCubicBezierPoint(1-stepSize, this.controlPoints[this.controlPoints.length-4], this.controlPoints[this.controlPoints.length-3], this.controlPoints[this.controlPoints.length-2], this.controlPoints[this.controlPoints.length-1])).subtract(endIn);
-                Vector normalEnd = endStep.scale(-1).normalized();
-                
-                // Draw the inner 2 points (Up and Down)
-                gl.glVertex3d(endIn.x, endIn.y, -1);
-                gl.glNormal3d(normalEnd.x, normalEnd.y, normalEnd.z);
-                gl.glVertex3d(endIn.x, endIn.y, endIn.z);
+                    // Draw the inner 2 points (Up and Down)
+                    gl.glVertex3d(startIn.x, startIn.y, -1);
+                    gl.glNormal3d(normalStart.x, normalStart.y, normalStart.z);
+                    gl.glVertex3d(startIn.x, startIn.y, startIn.z);
 
-                // Draw outer point of the track.
-                Vector endOut = new Vector(endIn.x, endIn.y, endIn.z);
-                double endScalar = (endOut.length()+trackWidth)/endOut.length();
-                endOut = endOut.scale(endScalar);
-                gl.glVertex3d(endOut.x, endOut.y, -1);
-                gl.glNormal3d(normalEnd.x, normalEnd.y, normalEnd.z);
-                gl.glVertex3d(endOut.x, endOut.y, endOut.z);
-                gl.glNormal3d(normalEnd.x, normalEnd.y, normalEnd.z);
-            gl.glEnd();
+                    // Draw outer point of the track.
+                    Vector startOut = startIn.add((startStep).cross(Vector.Z).normalized().scale(trackWidth));
 
+                    gl.glVertex3d(startOut.x, startOut.y, -1);
+                    gl.glNormal3d(normalStart.x, normalStart.y, normalStart.z);
+                    gl.glVertex3d(startOut.x, startOut.y, startOut.z);
+                    gl.glNormal3d(normalStart.x, normalStart.y, normalStart.z);
+                gl.glEnd();
+
+                /**
+                 * Drawing End of the track
+                 */
+                gl.glBegin(gl.GL_QUAD_STRIP);
+                    Vector endIn = this.controlPoints[controlPoints.length-1];
+                    // Find the normal by taking a single step backward.
+                    // Invert it and normalize it.
+                    Vector endStep = (this.getCubicBezierPoint(1-stepSize, this.controlPoints[this.controlPoints.length-4], this.controlPoints[this.controlPoints.length-3], this.controlPoints[this.controlPoints.length-2], this.controlPoints[this.controlPoints.length-1])).subtract(endIn);
+                    Vector normalEnd = endStep.scale(-1).normalized();
+
+                    // Draw the inner 2 points (Up and Down)
+                    gl.glVertex3d(endIn.x, endIn.y, -1);
+                    gl.glNormal3d(normalEnd.x, normalEnd.y, normalEnd.z);
+                    gl.glVertex3d(endIn.x, endIn.y, endIn.z);
+
+                    // Draw outer point of the track.
+                    Vector endOut = endIn.add((endStep).cross(Vector.Z).normalized().scale(trackWidth*-1));
+                    
+                    gl.glVertex3d(endOut.x, endOut.y, -1);
+                    gl.glNormal3d(normalEnd.x, normalEnd.y, normalEnd.z);
+                    gl.glVertex3d(endOut.x, endOut.y, endOut.z);
+                    gl.glNormal3d(normalEnd.x, normalEnd.y, normalEnd.z);
+                gl.glEnd();
+            }
             
             /**
              * Drawing the top of the racetrack
@@ -198,9 +203,8 @@ class RaceTrack {
                     gl.glVertex3d(v.x, v.y, v.z);
 
                     // Draw outer point of the track.
-                    Vector w = new Vector(v.x, v.y, v.z);
-                    double scalar = (w.length()+trackWidth)/w.length();
-                    w = w.scale(scalar);
+                    Vector w = this.getCubicBezierPoint(t+stepSize, this.controlPoints[(i*4)], this.controlPoints[(i*4)+1], this.controlPoints[(i*4)+2], this.controlPoints[(i*4)+3]);
+                    w = v.add((w.subtract(v)).cross(Vector.Z).normalized().scale(trackWidth));
 
                     // With an normal pointing up (Z)
                     gl.glNormal3d(Vector.Z.x, Vector.Z.y, Vector.Z.z);
@@ -234,8 +238,8 @@ class RaceTrack {
                 for(double t = 0.0; t <= 1.0; t+=stepSize) {
                     // Top point of the racetrack
                     Vector v = this.getCubicBezierPoint(t, this.controlPoints[(i*4)], this.controlPoints[(i*4)+1], this.controlPoints[(i*4)+2], this.controlPoints[(i*4)+3]);
-                    double scalar = (v.length()+trackWidth)/v.length();
-                    v = v.scale(scalar);
+                    Vector v2 = this.getCubicBezierPoint(t+stepSize, this.controlPoints[(i*4)], this.controlPoints[(i*4)+1], this.controlPoints[(i*4)+2], this.controlPoints[(i*4)+3]);
+                    v = v.add((v2.subtract(v)).cross(Vector.Z).normalized().scale(trackWidth));
 
                     Vector n = (new Vector(v.x, v.y, 0)).normalized();
                     gl.glNormal3d(n.x, n.y, n.z);
@@ -260,38 +264,15 @@ class RaceTrack {
             v = v.scale(scalar);
             
             return new Vector(v.x, v.y, 1);
-        } else {
-            Vector v;
-                    
-            // If there are only 4 control points we don't need to find out what segment we are in.
-            if(controlPoints.length == 4)
-                v = this.getCubicBezierPoint(t, this.controlPoints[0], this.controlPoints[1], this.controlPoints[2], this.controlPoints[3]);
-            else {
-                // Find the total distance traveled
-                double lengthTraveled = t*trackLength;
-                // Create a var to keep track of what segment it is.
-                int segment = -1;
-                
-                // Loop through all segments and find what segment the point is in.
-                // And how far into the segment it is.
-                for(int i = 0; i < lengthDistribution.length; i++) {
-                    if(lengthTraveled <= lengthDistribution[i]) {
-                        segment = i;
-                        t = lengthTraveled/lengthDistribution[i];
-                        break;
-                    } else {
-                        lengthTraveled -= lengthDistribution[i];
-                    }
-                }
-                if(segment >= lengthDistribution.length || segment == -1) {
-                    segment = lengthDistribution.length-1;
-                    t = 1;
-                }
-                
-                v = this.getCubicBezierPoint(t, this.controlPoints[(segment*4)], this.controlPoints[(segment*4)+1], this.controlPoints[(segment*4)+2], this.controlPoints[(segment*4)+3]);
-            }
-            double scalar = (v.length()+((laneWidth*lane)+laneWidth/2))/v.length();            
-            return v.scale(scalar);
+        } else {            
+            double[] segmentPoint = this.getSegmentPoint(t);
+            int segment = (int)segmentPoint[0];
+            
+            Vector v = this.getCubicBezierPoint(segmentPoint[1], this.controlPoints[(segment*4)], this.controlPoints[(segment*4)+1], this.controlPoints[(segment*4)+2], this.controlPoints[(segment*4)+3]);
+            Vector v2 = this.getCubicBezierPoint(segmentPoint[1]+0.0001, this.controlPoints[(segment*4)], this.controlPoints[(segment*4)+1], this.controlPoints[(segment*4)+2], this.controlPoints[(segment*4)+3]);
+
+            Vector u = (v2.subtract(v)).cross(Vector.Z).normalized().scale((laneWidth*lane)+laneWidth/2);           
+            return v.add(u);
         }
     }
     
@@ -303,16 +284,28 @@ class RaceTrack {
         if (null == controlPoints) {
             return getTangent(t);
         } else {
-            Vector v;
-                    
+            double[] segmentPoint = this.getSegmentPoint(t);
+            int segment = (int)segmentPoint[0];
+            
+            return this.getCubicBezierTangent(segmentPoint[1], this.controlPoints[(segment*4)], this.controlPoints[(segment*4)+1], this.controlPoints[(segment*4)+2], this.controlPoints[(segment*4)+3]);
+        } 
+    }
+    
+    /**
+     * Finds what controlpoint segment and position the current t is in.
+     * @param t The overall progress over the track 0 <= t <=1
+     * @return Returns an double array. 0=segment, 1=position on that segment with 0<=position<=1
+     */
+    private double[] getSegmentPoint(double t) {
+            // Create a var to keep track of what segment it is.
+            double segment = -1;
+        
             // If there are only 4 control points we don't need to find out what segment we are in.
             if(controlPoints.length == 4)
-                v = this.getCubicBezierTangent(t, this.controlPoints[0], this.controlPoints[1], this.controlPoints[2], this.controlPoints[3]);
+                segment = 0;
             else {
                 // Find the total distance traveled
                 double lengthTraveled = t*trackLength;
-                // Create a var to keep track of what segment it is.
-                int segment = -1;
                 
                 // Loop through all segments and find what segment the point is in.
                 // And how far into the segment it is.
@@ -327,13 +320,10 @@ class RaceTrack {
                 }
                 if(segment >= lengthDistribution.length || segment == -1) {
                     segment = lengthDistribution.length-1;
-                    t = 1;
                 }
-                v = this.getCubicBezierTangent(t, this.controlPoints[(segment*4)], this.controlPoints[(segment*4)+1], this.controlPoints[(segment*4)+2], this.controlPoints[(segment*4)+3]);
             }
-            double scalar = (v.length()+((laneWidth*lane)+laneWidth/2))/v.length();
-            return v.scale(scalar);
-        }
+            
+        return new double[]{segment,t};
     }
 
     /**

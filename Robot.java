@@ -121,7 +121,7 @@ class Robot {
         
         // cos alpha = (A.B)/(|A|*|B|)
         // A = Vector.Y, B=this.direction.normalized()
-        // since A and B in this case are both unit length we dont need to do that part.
+        // since A and B in this case are both unit length we dont need to calculate the length and divide since it will be 1.
         Vector dir = this.direction.normalized();
         double dotProduct = Vector.Y.dot(dir);
         double acos = Math.acos(dotProduct);

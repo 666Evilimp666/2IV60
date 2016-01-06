@@ -120,26 +120,26 @@ public class RobotRace extends Base {
         raceTracks[1] = new RaceTrack(new Vector[] {
             // First part
             new Vector(0, 10, 1),
-            new Vector(5, 10, 1),
-            new Vector(10, 5, 1),
-            new Vector(10, 0, 1),
+            new Vector(-5, 10, 1),
+            new Vector(-10, 5, 1),
+            new Vector(-10, 0, 1),
             
             // Second part
-            new Vector(10, 0, 1),
-            new Vector(10, -5, 1),
-            new Vector(5, -10, 1),
+            new Vector(-10, 0, 1),
+            new Vector(-10, -5, 1),
+            new Vector(-5, -10, 1),
             new Vector(0, -10, 1),
-            
+
             // Third part
             new Vector(0, -10, 1),
-            new Vector(-5, -10, 1),
-            new Vector(-10, -5, 1),
-            new Vector(-10, 0, 1),
-            
+            new Vector(5, -10, 1),
+            new Vector(10, -5, 1),
+            new Vector(10, 0, 1),
+
             // Fourth part
-            new Vector(-10, 0, 1),
-            new Vector(-10, 5, 1),
-            new Vector(-5, 10, 1),
+            new Vector(10, 0, 1),
+            new Vector(10, 5, 1),
+            new Vector(5, 10, 1),
             new Vector(0, 10, 1)
         });
         
@@ -167,27 +167,31 @@ public class RobotRace extends Base {
         // C-track
         raceTracks[3] = new RaceTrack(new Vector[] { 
             // First part
-            new Vector(0, 10, 1),
-            new Vector(5, 10, 1),
-            new Vector(10, 5, 1),
-            new Vector(10, 0, 1),
+            new Vector(-10, 0, 1),
+            new Vector(-10, -5, 1),
+            new Vector(-5, -10, 1),
+            new Vector(0, -10, 1),
             
             // Second part
-            new Vector(10, 0, 1),
-            new Vector(10, -5, 1),
-            new Vector(5, -10, 1),
             new Vector(0, -10, 1),
+            new Vector(5, -10, 1),
+            new Vector(10, -5, 1),
+            new Vector(10, 0, 1),
             
             // Third part
-            new Vector(0, -10, 1),
-            new Vector(-5, -10, 1),
-            new Vector(-10, -5, 1),
-            new Vector(-10, 0, 1)
+            new Vector(10, 0, 1),
+            new Vector(10, 5, 1),
+            new Vector(5, 10, 1),
+            new Vector(0, 10, 1)
         });
         
         // Custom track
         raceTracks[4] = new RaceTrack(
         new Vector[] { 
+            new Vector(-10, 0, 1),
+            new Vector(-10, -5, 1),
+            new Vector(-5, -10, 1),
+            new Vector(0, -10, 1)
         });
         
         // Initialize the terrain
