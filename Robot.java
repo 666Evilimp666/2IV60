@@ -30,6 +30,9 @@ class Robot {
     private GLU glu;
     private GLUT glut;
     
+    // The animation speed of this unit. (base 1.0) with a max differeence of 10%.
+    private double animationSpeed = (Math.random()*0.2)+0.9;
+    
     /**
      * Variable to see the difference between right/left arms and legs.
      */
@@ -241,14 +244,20 @@ class Robot {
         if(orientation == Robot.LimbOrientation.LEFT)
             gl.glScaled(-1, 1, 1);
         
+        // Translate the arm to the correct position
         gl.glTranslated(this.armOffset.x(), this.armOffset.y(), this.armOffset.z());
         
+        // Rotate the arm over the course of the animation over 45 degrees, shifted 10 degrees.
+        if(orientation == Robot.LimbOrientation.LEFT)
+            gl.glRotated((Math.abs(Math.cos(tAnim*2*this.animationSpeed))*45)-10, 1, 0, 0);
+        else
+            gl.glRotated((Math.abs(Math.cos(tAnim*2*this.animationSpeed+(Math.PI/2)))*45)-10, 1, 0, 0);
         
         if(stickFigure) {
             // Drawing an stick representation of the arm.
             
             // Sphere at the attachmentpoint.
-            glut.glutSolidSphere(0.1, 5, 5);
+            glut.glutSolidSphere(0.1, 15, 15);
             
             // Line representing the arm.
             gl.glBegin(GL_LINES);
@@ -284,12 +293,18 @@ class Robot {
         
         gl.glTranslated(this.legOffset.x(), this.legOffset.y(), this.legOffset.z());
                 
+        // Rotate the arm over the course of the animation over 50 degrees, shifted 25 degrees.
+        if(orientation == Robot.LimbOrientation.LEFT)
+            gl.glRotated((Math.abs(Math.cos(tAnim*2*this.animationSpeed+(Math.PI/2)))*50)-25, 1, 0, 0);
+        else
+            gl.glRotated((Math.abs(Math.cos(tAnim*2*this.animationSpeed))*50)-25, 1, 0, 0);
+        
         if(stickFigure) {
             gl.glPushMatrix();
                 gl.glTranslated(0,0,torsoLegOverlap/2);
             
                 // Sphere at the attachmentpoint.
-                glut.glutSolidSphere(0.1, 5, 5);
+                glut.glutSolidSphere(0.1, 15, 15);
 
                 // Line representing the arm.
                 gl.glBegin(GL_LINES);
@@ -298,12 +313,20 @@ class Robot {
                 gl.glEnd();
             gl.glPopMatrix();
         } else {
-            // Drawing the actual robot
+            // Drawing a rotated cylinder to make leg-attachment to body seem less weird
+            gl.glPushMatrix();
+                // rotate the cylinder
+                gl.glRotated(90, 0, 1, 0);
+                glut.glutSolidCylinder(torsoLegOverlap*0.9, legWidth*1.1, 15, 15);
+                glut.glutSolidCylinder(torsoLegOverlap*0.2, legWidth*1.5, 5, 5);
+            gl.glPopMatrix();
+            
+            // Drawing the leg
             gl.glPushMatrix();
                 // Translate leg to correct position.
                 gl.glTranslated(legWidth/2, 0, (legHeight/-2)+torsoLegOverlap);
                 // Scale leg according to given dimensions.
-                gl.glScaled(legWidth, legDepth, legHeight);
+                gl.glScaled(legWidth, legDepth, legHeight-0.15);
                 glut.glutSolidCube(1);
             gl.glPopMatrix();
         }
