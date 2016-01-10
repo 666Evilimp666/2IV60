@@ -110,11 +110,19 @@ public class RobotRace extends Base {
         // Initialize the camera
         camera = new Camera();
         
+        // Initialize the terrain
+        terrain = new Terrain();
+        
         // Initialize the race tracks
         raceTracks = new RaceTrack[5];
         
         // Test track
-        raceTracks[0] = new RaceTrack();
+        raceTracks[0] = new RaceTrack(null, new Vector[] {
+            new Vector(0,0,terrain.heightAt(0, 0)-0.2),
+            new Vector(19,0,terrain.heightAt(19, 0)-0.2),
+            new Vector(-3.5,5.5,terrain.heightAt(-3.5f, 5.5f)-0.2),
+            new Vector(-15,15,terrain.heightAt(-15, 15)-0.2)
+        });
         
         // O-track
         raceTracks[1] = new RaceTrack(new Vector[] {
@@ -141,6 +149,11 @@ public class RobotRace extends Base {
             new Vector(10, 5, 1),
             new Vector(5, 10, 1),
             new Vector(0, 10, 1)
+        }, new Vector[] {
+            new Vector(0,0,terrain.heightAt(0, 0)-0.2),
+            new Vector(19,0,terrain.heightAt(19, 0)-0.2),
+            new Vector(-3.5,5.5,terrain.heightAt(-3.5f, 5.5f)-0.2),
+            new Vector(-15,15,terrain.heightAt(-15, 15)-0.2)
         });
         
         // L-track
@@ -162,6 +175,11 @@ public class RobotRace extends Base {
             new Vector(-5, -15, 1),
             new Vector(5, -15, 1),
             new Vector(15, -15, 1)
+        }, new Vector[] {
+            new Vector(0,0,terrain.heightAt(0, 0)-0.2),
+            new Vector(19,0,terrain.heightAt(19, 0)-0.2),
+            new Vector(-3.5,5.5,terrain.heightAt(-3.5f, 5.5f)-0.2),
+            new Vector(-12,18,terrain.heightAt(-12, 18)-0.2)
         });
         
         // C-track
@@ -183,19 +201,39 @@ public class RobotRace extends Base {
             new Vector(10, 5, 1),
             new Vector(5, 10, 1),
             new Vector(0, 10, 1)
+        }, new Vector[] {
+            new Vector(0,0,terrain.heightAt(0, 0)-0.2),
+            new Vector(19,0,terrain.heightAt(19, 0)-0.2),
+            new Vector(-3.5,5.5,terrain.heightAt(-3.5f, 5.5f)-0.2),
+            new Vector(-12,18,terrain.heightAt(-12, 18)-0.2)
         });
         
         // Custom track
         raceTracks[4] = new RaceTrack(
         new Vector[] { 
+            // First part
             new Vector(-10, 0, 1),
             new Vector(-10, -5, 1),
             new Vector(-5, -10, 1),
-            new Vector(0, -10, 1)
+            new Vector(0, -10, 1),
+                
+            // Second part
+            new Vector(0, -10, 1),
+            new Vector(5, -10, 1),
+            new Vector(10, -5, 1),
+            new Vector(10, 0, 1),
+            
+            // Third part
+            new Vector(10, 0, 1),
+            new Vector(10, 5, 1),
+            new Vector(10, 10, 1),
+            new Vector(10, 15, 1)
+        }, new Vector[] {
+            new Vector(0,0,terrain.heightAt(0, 0)-0.2),
+            new Vector(19,0,terrain.heightAt(19, 0)-0.2),
+            new Vector(-3.5,5.5,terrain.heightAt(-3.5f, 5.5f)-0.2),
+            new Vector(-12,18,terrain.heightAt(-12, 18)-0.2)
         });
-        
-        // Initialize the terrain
-        terrain = new Terrain();
         
         //starting robot to focus on
          focus = robots[0]; 
@@ -380,8 +418,13 @@ public class RobotRace extends Base {
         Calendar cal = Calendar.getInstance();
         String time = sdf.format(cal.getTime());
         
-        // Draw the time.
+        // Set the font color
+        float[] black = {0f, 0.0f, 0f, 1f};
+        gl.glMaterialfv(GL_FRONT, GL_DIFFUSE, black, 0);
+        gl.glMaterialfv(GL_FRONT, GL_SPECULAR, black, 0);
         gl.glColor4d(1, 1, 1, 1);
+        
+        // Draw the text
         this.drawText(time, 10, 10);
     }
     

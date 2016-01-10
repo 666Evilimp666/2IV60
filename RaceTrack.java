@@ -1,7 +1,11 @@
 package robotrace;
 
 import com.jogamp.opengl.util.gl2.GLUT;
+import static javax.media.opengl.GL.GL_FRONT;
 import javax.media.opengl.GL2;
+import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_DIFFUSE;
+import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SHININESS;
+import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SPECULAR;
 import javax.media.opengl.glu.GLU;
 
 /**
@@ -15,8 +19,10 @@ class RaceTrack {
     
     /** based on how many points a curve / line / spline should be drawn. (0 < stepSize <= 1) **/
     private final float stepSize = 0.0001f;
+    
+    /** Array with location of trees on this track */
+    private Vector[] treeLocations = new Vector[]{};
 
-    // @TODO: 4N points? we are working with cubic bezier (function name) so why would it be 3N?
     /** Array with 3N control points, where N is the number of segments. */
     private Vector[] controlPoints = null;
     
@@ -38,35 +44,46 @@ class RaceTrack {
     public RaceTrack(Vector[] controlPoints) {
         this.controlPoints = controlPoints;
         
-        // Calculate the distance of each spline.
-        // This is done in order to see what spline we are on since they don't always have the same size.
-        // (i.e. if we have a track of 4 splines, and we are on 0.3 (30%) that does not imply we are on the second spline.
-        double[] lengths = new double[controlPoints.length/4];
-        // Since we are working with cubic bezier splines all segments are based on 4 control points.
-        // Loop through all segments and calculate their length
-        for(int i = 0; i < controlPoints.length/4; i++) {
-            // Length so far
-            double len = 0;
-            
-            // Loop through the track in the same steps we use to render it
-            // And see the distance between each render point to calculate the distance
-            // of the bezierspline.
-            for(double t = stepSize; t <= 1.0; t+=stepSize) {
-                // Find start point of this step
-                Vector v = this.getCubicBezierPoint(t-stepSize, this.controlPoints[(i*4)], this.controlPoints[(i*4)+1], this.controlPoints[(i*4)+2], this.controlPoints[(i*4)+3]);
-                
-                // Find end point of this step
-                Vector v2 = this.getCubicBezierPoint(t, this.controlPoints[(i*4)], this.controlPoints[(i*4)+1], this.controlPoints[(i*4)+2], this.controlPoints[(i*4)+3]);
-            
-                // Subtract the start point from the end point to get the size of this segment.
-                // and add that to the current length.
-                len += (v2.subtract(v)).length();
+        if(controlPoints != null) {
+            // Calculate the distance of each spline.
+            // This is done in order to see what spline we are on since they don't always have the same size.
+            // (i.e. if we have a track of 4 splines, and we are on 0.3 (30%) that does not imply we are on the second spline.
+            double[] lengths = new double[controlPoints.length/4];
+            // Since we are working with cubic bezier splines all segments are based on 4 control points.
+            // Loop through all segments and calculate their length
+            for(int i = 0; i < controlPoints.length/4; i++) {
+                // Length so far
+                double len = 0;
+
+                // Loop through the track in the same steps we use to render it
+                // And see the distance between each render point to calculate the distance
+                // of the bezierspline.
+                for(double t = stepSize; t <= 1.0; t+=stepSize) {
+                    // Find start point of this step
+                    Vector v = this.getCubicBezierPoint(t-stepSize, this.controlPoints[(i*4)], this.controlPoints[(i*4)+1], this.controlPoints[(i*4)+2], this.controlPoints[(i*4)+3]);
+
+                    // Find end point of this step
+                    Vector v2 = this.getCubicBezierPoint(t, this.controlPoints[(i*4)], this.controlPoints[(i*4)+1], this.controlPoints[(i*4)+2], this.controlPoints[(i*4)+3]);
+
+                    // Subtract the start point from the end point to get the size of this segment.
+                    // and add that to the current length.
+                    len += (v2.subtract(v)).length();
+                }
+
+                lengths[i] = len;
+                trackLength += len;
             }
-            
-            lengths[i] = len;
-            trackLength += len;
+            lengthDistribution = lengths;
         }
-        lengthDistribution = lengths;
+    }
+    
+    /**
+     * Constructor for a spline track.
+     */
+    public RaceTrack(Vector[] controlPoints, Vector[] treeLocations) {
+        this(controlPoints);
+        
+        this.treeLocations = treeLocations;
     }
 
     /**
@@ -250,6 +267,96 @@ class RaceTrack {
                 }
             }
             gl.glEnd();
+        }
+        
+        /** Drawing trees at all tree-points **/
+        int sizeFactor = 0;
+        for(Vector location : treeLocations) {
+            sizeFactor++;
+            gl.glPushMatrix();
+                // Translate to the correct location
+                gl.glTranslated(location.x(), location.y(), location.z());
+            
+                // Set the materials for the trunk of the tree
+                gl.glMaterialfv(GL_FRONT, GL_DIFFUSE, Material.WOOD.diffuse, 0);
+                gl.glMaterialfv(GL_FRONT, GL_SPECULAR, Material.WOOD.specular, 0);
+                gl.glMaterialf(GL_FRONT, GL_SHININESS, Material.WOOD.shininess);
+
+                // Draw the Tree trunk
+                // With random width/height
+                double width = 0.1+Math.abs(Math.cos(sizeFactor));
+                double height = 0.3+2*Math.abs(Math.cos(sizeFactor));
+                glut.glutSolidCylinder(width, height, 15, 15);
+
+                // setting materials for the leafs
+                float[] green = {0f, 0.39f, 0f, 1f};
+                gl.glMaterialfv(GL_FRONT, GL_DIFFUSE, green, 0);
+                gl.glMaterialfv(GL_FRONT, GL_SPECULAR, green, 0);
+                
+                gl.glPushMatrix();
+                    gl.glTranslated(0, 0, height*0.85);
+                    
+                    // Randomize the leaf shape between cone and balls
+                    if(Math.tan(sizeFactor*sizeFactor) > 0) {
+                        // Draw a big base cone
+                        glut.glutSolidCone(width*2.1, height, 15, 15);
+                        
+                        // With a smaller cone ontop
+                        gl.glPushMatrix();
+                            gl.glTranslated(0, 0, height*0.4);
+                            glut.glutSolidCone(width*1.9, height, 15, 15);
+                        gl.glPopMatrix();
+                        
+                        // And an even smalled ontop of that
+                        gl.glPushMatrix();
+                            gl.glTranslated(0, 0, height*0.8);
+                            glut.glutSolidCone(width*1.6, height, 15, 15);
+                        gl.glPopMatrix();
+                    } else {
+                        // draw 4 spheres at the base with one ontop to represent leaves.
+                        gl.glPushMatrix();
+                            gl.glTranslated(width/2, width/2, 0);
+                            glut.glutSolidSphere(width*0.9, 15, 15);
+                        gl.glPopMatrix();
+                        
+                        gl.glPushMatrix();
+                            gl.glTranslated(width/2, width/-2, 0);
+                            glut.glutSolidSphere(width*0.9, 15, 15);
+                        gl.glPopMatrix();
+                        
+                        gl.glPushMatrix();
+                            gl.glTranslated(width/-2, width/-2, 0);
+                            glut.glutSolidSphere(width*0.9, 15, 15);
+                        gl.glPopMatrix();
+                        
+                        gl.glPushMatrix();
+                            gl.glTranslated(width/-2, width/2, 0);
+                            glut.glutSolidSphere(width*0.9, 15, 15);
+                        gl.glPopMatrix();
+                        
+                        gl.glPushMatrix();
+                            gl.glTranslated(0, width/2, width/2);
+                            glut.glutSolidSphere(width*0.9, 15, 15);
+                        gl.glPopMatrix();
+                        
+                        gl.glPushMatrix();
+                            gl.glTranslated(0, width/-2, width/2);
+                            glut.glutSolidSphere(width*0.9, 15, 15);
+                        gl.glPopMatrix();
+                        
+                        gl.glPushMatrix();
+                            gl.glTranslated(width/-2, 0, width/2);
+                            glut.glutSolidSphere(width*0.9, 15, 15);
+                        gl.glPopMatrix();
+                        
+                        gl.glPushMatrix();
+                            gl.glTranslated(width/2, 0, width/2);
+                            glut.glutSolidSphere(width*0.9, 15, 15);
+                        gl.glPopMatrix();
+                    }
+                gl.glPopMatrix();
+            
+            gl.glPopMatrix();
         }
     }
     
