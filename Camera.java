@@ -15,7 +15,9 @@ class Camera {
 
     /** The up vector. */
     public Vector up = Vector.Z;
+    //an int representing the last cameramode
     int last = 0;
+    //a boolean which keeps track if we have to update our random camera
     boolean update = false;
     /**
      * Updates the camera viewpoint and direction based on the
@@ -137,20 +139,21 @@ class Camera {
      * The above modes are alternated.
      */
     private void setAutoMode(GlobalState gs, Robot focus) {
+        //if we don't update we go for a random nr to determine which camera mode we want
         if(!(update)) {
             double choice = Math.random();
             if(choice < 0.33 && last != 1) {
-                last = 1;
+                last = 1; //save our choice
             }
             else if(0.33 < choice && choice < 0.66 && last != 2) {
-                last = 2;
+                last = 2; //save our choice
             }
             else {
                 last = 3;
          }
         
     }
-        else {
+        else { //if update is true we switch camera mode
             switch (last) {
                 case 1:
                     update = false;
@@ -167,6 +170,10 @@ class Camera {
             }
         }
     }
+    /**
+     * a work-around to get the update variable from RobotRace.java
+     * @param b a boolean value that is assigned to update
+     */
     public void varUpdate(boolean b) {
         update = b;
     }
