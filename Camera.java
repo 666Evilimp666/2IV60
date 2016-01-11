@@ -15,8 +15,9 @@ class Camera {
 
     /** The up vector. */
     public Vector up = Vector.Z;
+    //an int representing the last cameramode
     int last = 0;
-    boolean rndm = false;
+    //a boolean which keeps track if we have to update our random camera
     boolean update = false;
     /**
      * Updates the camera viewpoint and direction based on the
@@ -28,25 +29,21 @@ class Camera {
         switch (gs.camMode) {
             // Helicopter mode
             case 1:
-                rndm = false;
                 setHelicopterMode(gs, focus);
                 break;
                 
             // Motor cycle mode    
             case 2:
-                rndm = false;
                 setMotorCycleMode(gs, focus);
                 break;
                 
             // First person mode    
             case 3:
-                rndm = false;
                 setFirstPersonMode(gs, focus);
                 break;
                 
             // Auto mode    
             case 4:
-                rndm = true;
                 setAutoMode(gs, focus);
                 break;
                 
@@ -93,8 +90,8 @@ class Camera {
      * The camera should focus on the robot.
      */
     private void setHelicopterMode(GlobalState gs, Robot focus) {
+        update = false;
         double calcX, calcY, calcZ, r;
-        
         calcX = focus.position.x;
         calcY = focus.position.y;
         center = focus.position;
@@ -112,6 +109,7 @@ class Camera {
      * The camera should focus on the robot.
      */
     private void setMotorCycleMode(GlobalState gs, Robot focus) {
+        update = false;
         Vector direc = focus.direction.cross(Vector.Z);
         direc = direc.normalized();
         center = focus.position;
@@ -127,6 +125,7 @@ class Camera {
      * The camera should view from the perspective of the robot.
      */
     private void setFirstPersonMode(GlobalState gs, Robot focus) {
+        update = false;
         up = Vector.Z;
         center = focus.position.add(focus.direction);
         eye = focus.position.add(Vector.O);
@@ -140,35 +139,42 @@ class Camera {
      * The above modes are alternated.
      */
     private void setAutoMode(GlobalState gs, Robot focus) {
-        if(rndm) {
-            update = false;
+        //if we don't update we go for a random nr to determine which camera mode we want
+        if(!(update)) {
             double choice = Math.random();
             if(choice < 0.33 && last != 1) {
-                setHelicopterMode(gs, focus);
-                last = 1;
+                last = 1; //save our choice
             }
             else if(0.33 < choice && choice < 0.66 && last != 2) {
-                setMotorCycleMode(gs, focus);
-                last = 2;
+                last = 2; //save our choice
             }
             else {
-                setFirstPersonMode(gs, focus);
                 last = 3;
          }
         
     }
-        else {
+        else { //if update is true we switch camera mode
             switch (last) {
                 case 1:
+                    update = false;
                     setHelicopterMode(gs, focus);
                     break;
                 case 2:
+                    update = false;
                     setMotorCycleMode(gs, focus);
                     break;
                 case 3:
+                    update = false;
                     setFirstPersonMode(gs, focus);
                     break;
             }
         }
+    }
+    /**
+     * a work-around to get the update variable from RobotRace.java
+     * @param b a boolean value that is assigned to update
+     */
+    public void varUpdate(boolean b) {
+        update = b;
     }
 }

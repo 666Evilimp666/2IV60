@@ -97,12 +97,12 @@ class RaceTrack {
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP);
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-        
+
         if (null == controlPoints) {
             /**
              * Drawing the top of the racetrack
              */
-            Base.track.bind(gl);
+            Base.track.bind(gl); //bind the track texture so we can use it
             gl.glBegin(gl.GL_QUAD_STRIP);
             for(double t = 0.0; t <= 1.0; t+=stepSize) {
                 // Draw inner point of the track.
@@ -123,11 +123,10 @@ class RaceTrack {
                 gl.glVertex3d(w.x, w.y, 1);
             }
             gl.glEnd();
-            
+            Base.brick.bind(gl); //bind the brick texture so we can use it
             /**
              * Drawing the inner side of the racetrack
              */
-            Base.brick.bind(gl);
             gl.glBegin(gl.GL_QUAD_STRIP);
             for(double t = 0.0; t <= 1.0; t+=stepSize) {
                 // Top point of the racetrack
@@ -148,7 +147,6 @@ class RaceTrack {
             /**
              * Drawing the outer side of the racetrack
             */
-            Base.brick.bind(gl);
             gl.glBegin(gl.GL_QUAD_STRIP);
             for(double t = 0.0; t <= 1.0; t+=stepSize) {
                 // Top point of the racetrack
@@ -223,11 +221,10 @@ class RaceTrack {
                     gl.glNormal3d(normalEnd.x, normalEnd.y, normalEnd.z);
                 gl.glEnd();
             }
-            
+            Base.track.bind(gl); //bind the track texture so we can use it
             /**
              * Drawing the top of the racetrack
              */
-            Base.track.bind(gl);
             gl.glBegin(gl.GL_QUAD_STRIP);
             for(int i = 0; i < controlPoints.length/4; i++) {
                 for(double t = 0.0; t <= 1.0; t+=stepSize) {
@@ -253,14 +250,13 @@ class RaceTrack {
             /**
              * Drawing the inner side of the racetrack
              */
-            Base.brick.bind(gl);
+            Base.brick.bind(gl); //bind the brick texture so we can use it
             gl.glBegin(GL2.GL_QUAD_STRIP);
             for(int i = 0; i < controlPoints.length/4; i++) {
                 for(double t = 0.0; t <= 1.0; t+=stepSize) {
                     Vector v = this.getCubicBezierPoint(t, this.controlPoints[(i*4)], this.controlPoints[(i*4)+1], this.controlPoints[(i*4)+2], this.controlPoints[(i*4)+3]);
                     Vector n = (new Vector(v.x*-1, v.y*-1, 0)).normalized();
                     gl.glNormal3d(n.x, n.y, n.z);
-
                     gl.glTexCoord2f((float)(t*10)%1 , 0f);
                     gl.glVertex3d(v.x(), v.y(), v.z());
                     gl.glNormal3d(n.x, n.y, n.z);
@@ -274,7 +270,6 @@ class RaceTrack {
             /**
              * Drawing the outer side of the racetrack
             */
-            Base.brick.bind(gl);
             gl.glBegin(gl.GL_QUAD_STRIP);
             for(int i = 0; i < controlPoints.length/4; i++) {
                 for(double t = 0.0; t <= 1.0; t+=stepSize) {
@@ -285,21 +280,17 @@ class RaceTrack {
 
                     Vector n = (new Vector(v.x, v.y, 0)).normalized();
                     gl.glNormal3d(n.x, n.y, n.z);
-
                     gl.glTexCoord2f((float)(t*10)%1 , 0f);
                     gl.glVertex3d(v.x, v.y, v.z);
 
                     gl.glNormal3d(n.x, n.y, n.z);
                     gl.glTexCoord2f((float)(t*10)%1 , 1.0f);
-                    
                     gl.glVertex3d(v.x, v.y, -1);
                 }
             }
             gl.glEnd();
         }
-        // Disable textures to draw the trees
-        gl.glDisable(gl.GL_TEXTURE_2D);
-        
+        gl.glDisable(gl.GL_TEXTURE_2D); //disable the 2d textures as we are going to draw non-textured trees
         /** Drawing trees at all tree-points **/
         int sizeFactor = 0;
         for(Vector location : treeLocations) {
