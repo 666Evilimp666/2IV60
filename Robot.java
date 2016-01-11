@@ -201,64 +201,65 @@ class Robot {
                 // top
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.Z.x(), Vector.Z.y(), Vector.Z.z());
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 1);
                     gl.glVertex3d(1, 1, 1);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 1);
                     gl.glVertex3d(-1, 1, 1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 0);
                     gl.glVertex3d(-1, -1, 1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 1);
                     gl.glVertex3d(1, -1, 1);
                 gl.glEnd();
                 
                 // Right
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.X.x(), Vector.X.y(), Vector.X.z());
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 1);
                     gl.glVertex3d(1, 1, 1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 0);
                     gl.glVertex3d(1, 1, -1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 0);
                     gl.glVertex3d(1, -1, -1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 1);
                     gl.glVertex3d(1, -1, 1);
                 gl.glEnd();
                 
                 // Left
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.X.x()*-1, Vector.X.y()*-1, Vector.X.z()*-1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 1);
                     gl.glVertex3d(-1, 1, 1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 0);
                     gl.glVertex3d(-1, 1, -1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 0);
                     gl.glVertex3d(-1, -1, -1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 1);
                     gl.glVertex3d(-1, -1, 1);
                 gl.glEnd();
                 
                 // front
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.Y.x(), Vector.Y.y(), Vector.Y.z());
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 1);
                     gl.glVertex3d(1, 1, 1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 0);
                     gl.glVertex3d(1, 1, -1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 0);
                     gl.glVertex3d(-1, 1, -1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 1);
                     gl.glVertex3d(-1, 1, 1);
                 gl.glEnd();
                 
                 // Back
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.Y.x()*-1, Vector.Y.y()*-1, Vector.Y.z()*-1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 1);
                     gl.glVertex3d(1, -1, 1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 0);
                     gl.glVertex3d(1, -1, -1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 0);
                     gl.glVertex3d(-1, -1, -1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 1);
                     gl.glVertex3d(-1, -1, 1);
                 gl.glEnd();
             gl.glPopMatrix();
@@ -310,65 +311,65 @@ class Robot {
                 // top
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.Z.x(), Vector.Z.y(), Vector.Z.z());
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 1);
                     gl.glVertex3d(0.5, 0.5, 0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 0);
                     gl.glVertex3d(-0.5, 0.5, 0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 0);
                     gl.glVertex3d(-0.5, -0.5, 0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 1);
                     gl.glVertex3d(0.5, -0.5, 0.5);
                 gl.glEnd();
                 
                 // Right
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.X.x(), Vector.X.y(), Vector.X.z());
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 1);
                     gl.glVertex3d(0.5, 0.5, 0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 0);
                     gl.glVertex3d(0.5, 0.5, -0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 0);
                     gl.glVertex3d(0.5, -0.5, -0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 1);
                     gl.glVertex3d(0.5, -0.5, 0.5);
                 gl.glEnd();
                 
                 // Left
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.X.x()*-1, Vector.X.y()*-1, Vector.X.z()*-1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 1);
                     gl.glVertex3d(-0.5, 0.5, 0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 0);
                     gl.glVertex3d(-0.5, 0.5, -0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 0);
                     gl.glVertex3d(-0.5, -0.5, -0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 1);
                     gl.glVertex3d(-0.5, -0.5, 0.5);
                 gl.glEnd();
                 
                 // front
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.Y.x(), Vector.Y.y(), Vector.Y.z());
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 1);
                     gl.glVertex3d(0.5, 0.5, 0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 0);
                     gl.glVertex3d(0.5, 0.5, -0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 0);
                     gl.glVertex3d(-0.5, 0.5, -0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 1);
                     gl.glVertex3d(-0.5, 0.5, 0.5);
                 gl.glEnd();
                 
                 // Back
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.Y.x()*-1, Vector.Y.y()*-1, Vector.Y.z()*-1);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 1);
                     gl.glVertex3d(0.5, -0.5, 0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f((0.26f * m) - 0.25f, 0);
                     gl.glVertex3d(0.5, -0.5, -0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 0);
                     gl.glVertex3d(-0.5, -0.5, -0.5);
-                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
+                    gl.glTexCoord2f(0.25f * m, 1);
                     gl.glVertex3d(-0.5, -0.5, 0.5);
                 gl.glEnd();
                 
