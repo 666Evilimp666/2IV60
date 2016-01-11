@@ -90,6 +90,14 @@ class RaceTrack {
      * Draws this track, based on the control points.
      */
     public void draw(GL2 gl, GLU glu, GLUT glut) {
+        //enable 2D textures and set the required parameters
+        gl.glEnable(gl.GL_TEXTURE_2D);
+        gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE);
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP);
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP);
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+        
         if (null == controlPoints) {
             /**
              * Drawing the top of the racetrack
@@ -100,6 +108,7 @@ class RaceTrack {
                 // With an normal pointing up (Z)
                 Vector v = this.getPoint(t);
                 gl.glNormal3d(Vector.Z.x, Vector.Z.y, Vector.Z.z);
+                gl.glTexCoord2f(0.0f , (float)(0 + t * 6)%1);
                 gl.glVertex3d(v.x, v.y, 1);
 
                 // Draw outer point of the track.
@@ -109,6 +118,7 @@ class RaceTrack {
                 
                 // With an normal pointing up (Z)
                 gl.glNormal3d(Vector.Z.x, Vector.Z.y, Vector.Z.z);
+                gl.glTexCoord2f(1.0f , (float)(t*6)%1);
                 gl.glVertex3d(w.x, w.y, 1);
             }
             gl.glEnd();
@@ -123,9 +133,11 @@ class RaceTrack {
                 Vector n = (new Vector(v.x*-1, v.y*-1, 0)).normalized();
                 
                 gl.glNormal3d(n.x, n.y, n.z);
+                gl.glTexCoord2f((float)(t*10)%1 , 0f);
                 gl.glVertex3d(v.x, v.y, 1);
                 
                 gl.glNormal3d(n.x, n.y, n.z);
+                gl.glTexCoord2f((float)(t*10)%1 , 1.0f);
                 gl.glVertex3d(v.x, v.y, -1);
             }
             gl.glEnd();
@@ -143,9 +155,11 @@ class RaceTrack {
                 
                 Vector n = (new Vector(v.x, v.y, 0)).normalized();
                 gl.glNormal3d(n.x, n.y, n.z);
+                gl.glTexCoord2f((float)(t*10)%1 , 0f);
                 gl.glVertex3d(v.x, v.y, 1);
                 
                 gl.glNormal3d(n.x, n.y, n.z);
+                gl.glTexCoord2f((float)(t*10)%1 , 1.0f);
                 gl.glVertex3d(v.x, v.y, -1);
             }
             gl.glEnd();
@@ -217,6 +231,7 @@ class RaceTrack {
                     // With an normal pointing up
                     Vector v = this.getCubicBezierPoint(t, this.controlPoints[(i*4)], this.controlPoints[(i*4)+1], this.controlPoints[(i*4)+2], this.controlPoints[(i*4)+3]);
                     gl.glNormal3d(Vector.Z.x, Vector.Z.y, Vector.Z.z);
+                    gl.glTexCoord2f(0.0f , (float)(0 + t * 4)%1);
                     gl.glVertex3d(v.x, v.y, v.z);
 
                     // Draw outer point of the track.
@@ -225,6 +240,7 @@ class RaceTrack {
 
                     // With an normal pointing up (Z)
                     gl.glNormal3d(Vector.Z.x, Vector.Z.y, Vector.Z.z);
+                    gl.glTexCoord2f(1.0f , (float)(0 + t * 6)%1);
                     gl.glVertex3d(w.x, w.y, w.z);
                 }
             }
@@ -239,8 +255,11 @@ class RaceTrack {
                     Vector v = this.getCubicBezierPoint(t, this.controlPoints[(i*4)], this.controlPoints[(i*4)+1], this.controlPoints[(i*4)+2], this.controlPoints[(i*4)+3]);
                     Vector n = (new Vector(v.x*-1, v.y*-1, 0)).normalized();
                     gl.glNormal3d(n.x, n.y, n.z);
+
+                    gl.glTexCoord2f((float)(t*10)%1 , 0f);
                     gl.glVertex3d(v.x(), v.y(), v.z());
                     gl.glNormal3d(n.x, n.y, n.z);
+                    gl.glTexCoord2f((float)(t*10)%1 , 1.0f);
                     gl.glVertex3d(v.x(), v.y(), -1);
                 }
             }
@@ -260,9 +279,13 @@ class RaceTrack {
 
                     Vector n = (new Vector(v.x, v.y, 0)).normalized();
                     gl.glNormal3d(n.x, n.y, n.z);
+
+                    gl.glTexCoord2f((float)(t*10)%1 , 0f);
                     gl.glVertex3d(v.x, v.y, v.z);
 
                     gl.glNormal3d(n.x, n.y, n.z);
+                    gl.glTexCoord2f((float)(t*10)%1 , 1.0f);
+                    
                     gl.glVertex3d(v.x, v.y, -1);
                 }
             }

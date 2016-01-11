@@ -45,6 +45,8 @@ class Terrain {
         //enable and set required parameters
         gl.glEnable(gl.GL_TEXTURE_1D);
         gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE);
+        gl.glTexParameteri(gl.GL_TEXTURE_1D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+        gl.glTexParameteri(gl.GL_TEXTURE_1D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
         //here we start to draw the terrain
         for(int x = minX; x <= maxX; x++) {
             gl.glBegin(gl.GL_TRIANGLE_STRIP);
