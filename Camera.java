@@ -16,7 +16,6 @@ class Camera {
     /** The up vector. */
     public Vector up = Vector.Z;
     int last = 0;
-    boolean rndm = false;
     boolean update = false;
     /**
      * Updates the camera viewpoint and direction based on the
@@ -28,25 +27,21 @@ class Camera {
         switch (gs.camMode) {
             // Helicopter mode
             case 1:
-                rndm = false;
                 setHelicopterMode(gs, focus);
                 break;
                 
             // Motor cycle mode    
             case 2:
-                rndm = false;
                 setMotorCycleMode(gs, focus);
                 break;
                 
             // First person mode    
             case 3:
-                rndm = false;
                 setFirstPersonMode(gs, focus);
                 break;
                 
             // Auto mode    
             case 4:
-                rndm = true;
                 setAutoMode(gs, focus);
                 break;
                 
@@ -93,8 +88,8 @@ class Camera {
      * The camera should focus on the robot.
      */
     private void setHelicopterMode(GlobalState gs, Robot focus) {
+        update = false;
         double calcX, calcY, calcZ, r;
-        
         calcX = focus.position.x;
         calcY = focus.position.y;
         center = focus.position;
@@ -112,6 +107,7 @@ class Camera {
      * The camera should focus on the robot.
      */
     private void setMotorCycleMode(GlobalState gs, Robot focus) {
+        update = false;
         Vector direc = focus.direction.cross(Vector.Z);
         direc = direc.normalized();
         center = focus.position;
@@ -127,6 +123,7 @@ class Camera {
      * The camera should view from the perspective of the robot.
      */
     private void setFirstPersonMode(GlobalState gs, Robot focus) {
+        update = false;
         up = Vector.Z;
         center = focus.position.add(focus.direction);
         eye = focus.position.add(Vector.O);
@@ -140,19 +137,15 @@ class Camera {
      * The above modes are alternated.
      */
     private void setAutoMode(GlobalState gs, Robot focus) {
-        if(rndm) {
-            update = false;
+        if(!(update)) {
             double choice = Math.random();
             if(choice < 0.33 && last != 1) {
-                setHelicopterMode(gs, focus);
                 last = 1;
             }
             else if(0.33 < choice && choice < 0.66 && last != 2) {
-                setMotorCycleMode(gs, focus);
                 last = 2;
             }
             else {
-                setFirstPersonMode(gs, focus);
                 last = 3;
          }
         
@@ -160,15 +153,21 @@ class Camera {
         else {
             switch (last) {
                 case 1:
+                    update = false;
                     setHelicopterMode(gs, focus);
                     break;
                 case 2:
+                    update = false;
                     setMotorCycleMode(gs, focus);
                     break;
                 case 3:
+                    update = false;
                     setFirstPersonMode(gs, focus);
                     break;
             }
         }
+    }
+    public void varUpdate(boolean b) {
+        update = b;
     }
 }

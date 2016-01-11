@@ -278,13 +278,15 @@ public class RobotRace extends Base {
         if(time%5 == 0 && update) {
            focus = robotSwitch(focus);
            update = false;
+           camera.varUpdate(update);
         }
         if(time%5 != 0) {
             update = true;
+            camera.varUpdate(update);
         }
         
         camera.update(gs, focus);
-        
+        camera.varUpdate(update);
         // Select part of window.
         gl.glViewport(0, 0, gs.w, gs.h);
         
