@@ -180,6 +180,15 @@ class Robot {
                 glut.glutWireCube(2f);
             gl.glPopMatrix();
         } else {
+            //enable 2D textures and set the parameters
+            gl.glEnable(gl.GL_TEXTURE_2D);
+            gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE);
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP);
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP);
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+            int m = getMaterial(); //an integer representing the material of the robot
+            Base.head.bind(gl);
             // actual drawing
             gl.glPushMatrix();
                 // Translate head to correct position.
@@ -192,50 +201,70 @@ class Robot {
                 // top
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.Z.x(), Vector.Z.y(), Vector.Z.z());
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(1, 1, 1);
                     gl.glVertex3d(-1, 1, 1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-1, -1, 1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(1, -1, 1);
                 gl.glEnd();
                 
                 // Right
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.X.x(), Vector.X.y(), Vector.X.z());
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(1, 1, 1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(1, 1, -1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(1, -1, -1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(1, -1, 1);
                 gl.glEnd();
                 
                 // Left
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.X.x()*-1, Vector.X.y()*-1, Vector.X.z()*-1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-1, 1, 1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-1, 1, -1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-1, -1, -1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-1, -1, 1);
                 gl.glEnd();
                 
                 // front
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.Y.x(), Vector.Y.y(), Vector.Y.z());
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(1, 1, 1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(1, 1, -1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-1, 1, -1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-1, 1, 1);
                 gl.glEnd();
                 
                 // Back
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.Y.x()*-1, Vector.Y.y()*-1, Vector.Y.z()*-1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(1, -1, 1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(1, -1, -1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-1, -1, -1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-1, -1, 1);
                 gl.glEnd();
             gl.glPopMatrix();
         }
         gl.glPopMatrix();
+        gl.glDisable(gl.GL_TEXTURE_2D);
     }
     
     /**
@@ -264,6 +293,14 @@ class Robot {
             gl.glVertex3d(this.legOffset.x()*-1, 0f, this.legOffset.z()+(torsoLegOverlap/2));
             gl.glEnd();
         } else {
+            gl.glEnable(gl.GL_TEXTURE_2D);
+            gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE);
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP);
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP);
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+            int m = getMaterial(); //an integer representing the material of the robot
+            Base.torso.bind(gl);
             gl.glPushMatrix();
                 // Translate torso to correct position.
                 gl.glTranslated(0, 0, headOffset.z()-(torsoHeight/2));
@@ -273,50 +310,71 @@ class Robot {
                 // top
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.Z.x(), Vector.Z.y(), Vector.Z.z());
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(0.5, 0.5, 0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-0.5, 0.5, 0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-0.5, -0.5, 0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(0.5, -0.5, 0.5);
                 gl.glEnd();
                 
                 // Right
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.X.x(), Vector.X.y(), Vector.X.z());
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(0.5, 0.5, 0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(0.5, 0.5, -0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(0.5, -0.5, -0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(0.5, -0.5, 0.5);
                 gl.glEnd();
                 
                 // Left
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.X.x()*-1, Vector.X.y()*-1, Vector.X.z()*-1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-0.5, 0.5, 0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-0.5, 0.5, -0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-0.5, -0.5, -0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-0.5, -0.5, 0.5);
                 gl.glEnd();
                 
                 // front
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.Y.x(), Vector.Y.y(), Vector.Y.z());
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(0.5, 0.5, 0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(0.5, 0.5, -0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-0.5, 0.5, -0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-0.5, 0.5, 0.5);
                 gl.glEnd();
                 
                 // Back
                 gl.glBegin(gl.GL_QUADS);
                     gl.glNormal3d(Vector.Y.x()*-1, Vector.Y.y()*-1, Vector.Y.z()*-1);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(0.5, -0.5, 0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(0.5, -0.5, -0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-0.5, -0.5, -0.5);
+                    gl.glTexCoord2f(0.2f * m, 0.2f*m);
                     gl.glVertex3d(-0.5, -0.5, 0.5);
                 gl.glEnd();
             gl.glPopMatrix();
         }
         gl.glPopMatrix();
+        gl.glDisable(gl.GL_TEXTURE_2D);
     }
     
     
@@ -420,5 +478,18 @@ class Robot {
             gl.glPopMatrix();
         }
         gl.glPopMatrix();
+    }
+    
+    int getMaterial() {
+        switch (this.material) {
+            case GOLD:
+                return 1;
+            case SILVER:
+                return 2;
+            case WOOD:
+                return 3;
+            default:
+                return 4;
+        }
     }
 }
