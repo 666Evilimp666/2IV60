@@ -11,6 +11,9 @@ import java.awt.Color;
  */
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import static javax.media.opengl.GL.GL_FRONT;
+import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_DIFFUSE;
+import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SPECULAR;
 class Terrain {
     int maxX = 20;
     int maxY = 20;
@@ -35,8 +38,8 @@ class Terrain {
         gl.glEnable(gl.GL_TEXTURE_1D);
         gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE);
         //here we start to draw the terrain
-        gl.glBegin(gl.GL_TRIANGLE_STRIP);
         for(int x = minX; x <= maxX; x++) {
+            gl.glBegin(gl.GL_TRIANGLE_STRIP);
             for(float y = minY; y <= maxY; y+=0.5) {
                 //set normals pointing up
                 gl.glNormal3d(Vector.Z.x, Vector.Z.y, Vector.Z.z);
@@ -54,24 +57,48 @@ class Terrain {
                 }
                 gl.glTexCoord1f(t);
                 gl.glVertex3d(x, y, z);
-                z = heightAt((float)(x + 0.5), y);
-                t = 0;
-                if(z < 0) {
-                    t = 0.2f;
+                
+                if(x != maxX) {
+                    z = heightAt((float)(x + 1), y);
+                    t = 0;
+                    if(z < 0) {
+                        t = 0.2f;
+                    }
+                    else if( z > 0.5) {
+                        t = 0.8f;
+                    }
+                    else {
+                        t = 0.5f;
+                    }
+                    gl.glTexCoord1f(t);
+                    gl.glVertex3d(x + 1, y, z);
                 }
-                else if( z > 0.5) {
-                    t = 0.8f;
-                }
-                else {
-                    t = 0.5f;
-                }
-                gl.glTexCoord1f(t);
-                gl.glVertex3d(x + 0.5, y, z);
             }
+            gl.glEnd();
         }
-        gl.glEnd();
         //disable 1D textures after we have drawn them
         gl.glDisable(gl.GL_TEXTURE_1D);
+        
+        
+        float[] grey = {0.5f, 0.5f, 0.5f, 0.3f};
+        gl.glMaterialfv(GL_FRONT, GL_DIFFUSE, grey, 0);
+        gl.glMaterialfv(GL_FRONT, GL_SPECULAR, grey, 0);
+        gl.glBegin(GL2.GL_TRIANGLE_STRIP);
+        
+        
+        gl.glNormal3d(Vector.Z.x(), Vector.Z.y(), Vector.Z.z());
+        gl.glVertex3d(maxX,minY,0);
+        
+        gl.glNormal3d(Vector.Z.x(), Vector.Z.y(), Vector.Z.z());
+        gl.glVertex3d(minX,minY,0);
+        
+        gl.glNormal3d(Vector.Z.x(), Vector.Z.y(), Vector.Z.z());
+        gl.glVertex3d(maxX,maxY,0);
+        
+        gl.glNormal3d(Vector.Z.x(), Vector.Z.y(), Vector.Z.z());
+        gl.glVertex3d(minX,maxY,0);
+        
+        gl.glEnd();
     }
 
     /**
