@@ -102,6 +102,7 @@ class RaceTrack {
             /**
              * Drawing the top of the racetrack
              */
+            Base.track.bind(gl);
             gl.glBegin(gl.GL_QUAD_STRIP);
             for(double t = 0.0; t <= 1.0; t+=stepSize) {
                 // Draw inner point of the track.
@@ -126,6 +127,7 @@ class RaceTrack {
             /**
              * Drawing the inner side of the racetrack
              */
+            Base.brick.bind(gl);
             gl.glBegin(gl.GL_QUAD_STRIP);
             for(double t = 0.0; t <= 1.0; t+=stepSize) {
                 // Top point of the racetrack
@@ -146,6 +148,7 @@ class RaceTrack {
             /**
              * Drawing the outer side of the racetrack
             */
+            Base.brick.bind(gl);
             gl.glBegin(gl.GL_QUAD_STRIP);
             for(double t = 0.0; t <= 1.0; t+=stepSize) {
                 // Top point of the racetrack
@@ -224,6 +227,7 @@ class RaceTrack {
             /**
              * Drawing the top of the racetrack
              */
+            Base.track.bind(gl);
             gl.glBegin(gl.GL_QUAD_STRIP);
             for(int i = 0; i < controlPoints.length/4; i++) {
                 for(double t = 0.0; t <= 1.0; t+=stepSize) {
@@ -249,6 +253,7 @@ class RaceTrack {
             /**
              * Drawing the inner side of the racetrack
              */
+            Base.brick.bind(gl);
             gl.glBegin(GL2.GL_QUAD_STRIP);
             for(int i = 0; i < controlPoints.length/4; i++) {
                 for(double t = 0.0; t <= 1.0; t+=stepSize) {
@@ -269,6 +274,7 @@ class RaceTrack {
             /**
              * Drawing the outer side of the racetrack
             */
+            Base.brick.bind(gl);
             gl.glBegin(gl.GL_QUAD_STRIP);
             for(int i = 0; i < controlPoints.length/4; i++) {
                 for(double t = 0.0; t <= 1.0; t+=stepSize) {
@@ -291,6 +297,8 @@ class RaceTrack {
             }
             gl.glEnd();
         }
+        // Disable textures to draw the trees
+        gl.glDisable(gl.GL_TEXTURE_2D);
         
         /** Drawing trees at all tree-points **/
         int sizeFactor = 0;
