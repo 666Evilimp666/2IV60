@@ -314,6 +314,15 @@ class Robot {
                     gl.glVertex3d(-0.5, -0.5, -0.5);
                     gl.glVertex3d(-0.5, -0.5, 0.5);
                 gl.glEnd();
+                
+                // bottom
+                gl.glBegin(gl.GL_QUADS);
+                    gl.glNormal3d(Vector.Z.x()*-1, Vector.Z.y()*-1, Vector.Z.z()*-1);
+                    gl.glVertex3d(0.5, 0.5, -0.5);
+                    gl.glVertex3d(-0.5, 0.5, -0.5);
+                    gl.glVertex3d(-0.5, -0.5, -0.5);
+                    gl.glVertex3d(0.5, -0.5, -0.5);
+                gl.glEnd();
             gl.glPopMatrix();
         }
         gl.glPopMatrix();
