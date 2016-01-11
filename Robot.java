@@ -4,7 +4,6 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import static javax.media.opengl.GL.GL_FRONT;
 import static javax.media.opengl.GL.GL_LINES;
 import javax.media.opengl.GL2;
-import javax.media.opengl.fixedfunc.GLLightingFunc;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.*;
 import javax.media.opengl.glu.GLU;
 
@@ -178,7 +177,7 @@ class Robot {
                 gl.glTranslated(0, 0, headHeight);
                 // Scale head according to given dimensions.
                 gl.glScaled(headWidth, headDepth, headHeight);
-                glut.glutWireSphere(1, 10, 10);
+                glut.glutWireCube(2f);
             gl.glPopMatrix();
         } else {
             // actual drawing
@@ -187,7 +186,53 @@ class Robot {
                 gl.glTranslated(0, 0, headHeight);
                 // Scale head according to given dimensions.
                 gl.glScaled(headWidth, headDepth, headHeight);
-                glut.glutSolidSphere(1, 8, 8);
+                
+                // Since everything is scaled and translated we can assume the head is a cube around the origin.
+                
+                // top
+                gl.glBegin(gl.GL_QUADS);
+                    gl.glNormal3d(Vector.Z.x(), Vector.Z.y(), Vector.Z.z());
+                    gl.glVertex3d(1, 1, 1);
+                    gl.glVertex3d(-1, 1, 1);
+                    gl.glVertex3d(-1, -1, 1);
+                    gl.glVertex3d(1, -1, 1);
+                gl.glEnd();
+                
+                // Right
+                gl.glBegin(gl.GL_QUADS);
+                    gl.glNormal3d(Vector.X.x(), Vector.X.y(), Vector.X.z());
+                    gl.glVertex3d(1, 1, 1);
+                    gl.glVertex3d(1, 1, -1);
+                    gl.glVertex3d(1, -1, -1);
+                    gl.glVertex3d(1, -1, 1);
+                gl.glEnd();
+                
+                // Left
+                gl.glBegin(gl.GL_QUADS);
+                    gl.glNormal3d(Vector.X.x()*-1, Vector.X.y()*-1, Vector.X.z()*-1);
+                    gl.glVertex3d(-1, 1, 1);
+                    gl.glVertex3d(-1, 1, -1);
+                    gl.glVertex3d(-1, -1, -1);
+                    gl.glVertex3d(-1, -1, 1);
+                gl.glEnd();
+                
+                // front
+                gl.glBegin(gl.GL_QUADS);
+                    gl.glNormal3d(Vector.Y.x(), Vector.Y.y(), Vector.Y.z());
+                    gl.glVertex3d(1, 1, 1);
+                    gl.glVertex3d(1, 1, -1);
+                    gl.glVertex3d(-1, 1, -1);
+                    gl.glVertex3d(-1, 1, 1);
+                gl.glEnd();
+                
+                // Back
+                gl.glBegin(gl.GL_QUADS);
+                    gl.glNormal3d(Vector.Y.x()*-1, Vector.Y.y()*-1, Vector.Y.z()*-1);
+                    gl.glVertex3d(1, -1, 1);
+                    gl.glVertex3d(1, -1, -1);
+                    gl.glVertex3d(-1, -1, -1);
+                    gl.glVertex3d(-1, -1, 1);
+                gl.glEnd();
             gl.glPopMatrix();
         }
         gl.glPopMatrix();
@@ -224,7 +269,51 @@ class Robot {
                 gl.glTranslated(0, 0, headOffset.z()-(torsoHeight/2));
                 // Scale torso according to given dimensions.
                 gl.glScaled(torsoWidth, torsoDepth, torsoHeight);
-                glut.glutSolidCube(1);
+                
+                // top
+                gl.glBegin(gl.GL_QUADS);
+                    gl.glNormal3d(Vector.Z.x(), Vector.Z.y(), Vector.Z.z());
+                    gl.glVertex3d(0.5, 0.5, 0.5);
+                    gl.glVertex3d(-0.5, 0.5, 0.5);
+                    gl.glVertex3d(-0.5, -0.5, 0.5);
+                    gl.glVertex3d(0.5, -0.5, 0.5);
+                gl.glEnd();
+                
+                // Right
+                gl.glBegin(gl.GL_QUADS);
+                    gl.glNormal3d(Vector.X.x(), Vector.X.y(), Vector.X.z());
+                    gl.glVertex3d(0.5, 0.5, 0.5);
+                    gl.glVertex3d(0.5, 0.5, -0.5);
+                    gl.glVertex3d(0.5, -0.5, -0.5);
+                    gl.glVertex3d(0.5, -0.5, 0.5);
+                gl.glEnd();
+                
+                // Left
+                gl.glBegin(gl.GL_QUADS);
+                    gl.glNormal3d(Vector.X.x()*-1, Vector.X.y()*-1, Vector.X.z()*-1);
+                    gl.glVertex3d(-0.5, 0.5, 0.5);
+                    gl.glVertex3d(-0.5, 0.5, -0.5);
+                    gl.glVertex3d(-0.5, -0.5, -0.5);
+                    gl.glVertex3d(-0.5, -0.5, 0.5);
+                gl.glEnd();
+                
+                // front
+                gl.glBegin(gl.GL_QUADS);
+                    gl.glNormal3d(Vector.Y.x(), Vector.Y.y(), Vector.Y.z());
+                    gl.glVertex3d(0.5, 0.5, 0.5);
+                    gl.glVertex3d(0.5, 0.5, -0.5);
+                    gl.glVertex3d(-0.5, 0.5, -0.5);
+                    gl.glVertex3d(-0.5, 0.5, 0.5);
+                gl.glEnd();
+                
+                // Back
+                gl.glBegin(gl.GL_QUADS);
+                    gl.glNormal3d(Vector.Y.x()*-1, Vector.Y.y()*-1, Vector.Y.z()*-1);
+                    gl.glVertex3d(0.5, -0.5, 0.5);
+                    gl.glVertex3d(0.5, -0.5, -0.5);
+                    gl.glVertex3d(-0.5, -0.5, -0.5);
+                    gl.glVertex3d(-0.5, -0.5, 0.5);
+                gl.glEnd();
             gl.glPopMatrix();
         }
         gl.glPopMatrix();
